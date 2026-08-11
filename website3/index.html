@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solstice Roasting Co. — Small-batch, single-origin coffee</title>
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo"><img src="logo.svg" alt="Solstice Roasting Co. logo">Solstice<span>.</span>Roasting</div>
+    <div class="navlinks">
+      <a href="#origins">Origins</a>
+      <a href="#process">Process</a>
+      <a href="#order">Order</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Small-batch · roasted weekly</div>
+      <h1>Coffee roasted<br>to its own curve,<br>not a chart.</h1>
+      <p>Every lot gets its own roast profile, logged minute by minute, because a Yirgacheffe and a Sumatra should never hit the same temperature at the same time.</p>
+      <a href="#order" class="btn">Order this week's beans</a>
+      <a href="#process" class="btn-outline">See how we roast</a>
+    </div>
+
+    <div class="curve-card">
+      <div class="mono"><span>LOT #0847</span><span>ETHIOPIA · GEDEB</span></div>
+      <h3>Roast Log</h3>
+      <div class="curve-sub">First crack at 9:42 · Drop at 11:15</div>
+      <svg id="curve" viewBox="0 0 400 180">
+        <line x1="0" y1="45" x2="400" y2="45" stroke="#EFE6D8" stroke-opacity="0.08"/>
+        <line x1="0" y1="90" x2="400" y2="90" stroke="#EFE6D8" stroke-opacity="0.08"/>
+        <line x1="0" y1="135" x2="400" y2="135" stroke="#EFE6D8" stroke-opacity="0.08"/>
+        <path d="M0,160 C60,150 100,120 140,95 C180,72 220,55 260,42 C300,32 340,26 400,20"
+              fill="none" stroke="#C1652F" stroke-width="2.5"/>
+        <circle cx="220" cy="55" r="4" fill="#EFE6D8"/>
+        <text x="228" y="50" fill="#EFE6D8" font-size="9" font-family="IBM Plex Mono">1st crack</text>
+      </svg>
+      <div class="curve-legend">
+        <span><span class="dot" style="background:#C1652F;"></span>Bean temp</span>
+        <span class="mono">205°C peak</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="section reveal" id="origins">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow mono">This week's lots</div>
+      <h2>Three origins, three curves</h2>
+      <p>We buy in small lots directly from growers and roast within days of each shipment landing.</p>
+    </div>
+    <div class="origins-grid">
+
+      <div class="origin-card">
+        <div class="mono">ETHIOPIA · GEDEB · 1,970M</div>
+        <h3>Yirgacheffe Washed</h3>
+        <p>Jasmine, stone fruit, a black-tea finish. Light-medium roast, dropped early to keep the florals intact.</p>
+        <div class="origin-meta"><span>$21 / 340g</span><span>Roasted Tue</span></div>
+      </div>
+
+      <div class="origin-card">
+        <div class="mono">SUMATRA · ACEH · 1,300M</div>
+        <h3>Gayo Wet-Hulled</h3>
+        <p>Cedar, dark cocoa, low acidity. Roasted longer and slower — this one rewards patience in the drum.</p>
+        <div class="origin-meta"><span>$19 / 340g</span><span>Roasted Wed</span></div>
+      </div>
+
+      <div class="origin-card">
+        <div class="mono">COLOMBIA · HUILA · 1,750M</div>
+        <h3>Pink Bourbon Natural</h3>
+        <p>Strawberry, brown sugar, a wine-like body. Fast first phase, gentle finish to avoid scorching the sugars.</p>
+        <div class="origin-meta"><span>$23 / 340g</span><span>Roasted Thu</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section process reveal" id="process">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow mono">How a bag gets made</div>
+      <h2>Four stages, one drum</h2>
+    </div>
+    <div class="process-list">
+      <div class="process-step">
+        <div class="mono">DRYING</div>
+        <h3>Moisture out</h3>
+        <p>Green beans lose surface water before any browning starts. Rushing this scorches the outside.</p>
+      </div>
+      <div class="process-step">
+        <div class="mono">MAILLARD</div>
+        <h3>Sugars brown</h3>
+        <p>The bean's own sugars and amino acids react, building the body and most of the flavor.</p>
+      </div>
+      <div class="process-step">
+        <div class="mono">CRACK</div>
+        <h3>First crack</h3>
+        <p>Steam pressure splits the bean. From here, every extra minute pushes the flavor darker.</p>
+      </div>
+      <div class="process-step">
+        <div class="mono">DROP</div>
+        <h3>Cool immediately</h3>
+        <p>Beans hit a cooling tray the second they're dropped, so residual heat doesn't keep roasting them.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section reveal" id="order">
+  <div class="wrap" style="text-align:center;">
+    <h2 style="font-size:2rem;margin-bottom:16px;">Beans ship the day after roasting.</h2>
+    <p style="opacity:0.75;margin-bottom:28px;">No warehouse sitting around — your bag is roasted, sealed, and on a truck within 24 hours.</p>
+    <button id="order-btn" class="btn">Start an order</button>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="mono">SOLSTICE ROASTING CO. — EST. SAMPLE SITE</div>
+    <div class="mono">Built with plain HTML, CSS & JS</div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

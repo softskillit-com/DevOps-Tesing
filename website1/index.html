@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CloudNova Technologies</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Arial,sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#333;
+}
+
+header{
+    background:#0f172a;
+    color:white;
+    padding:18px 8%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:bold;
+    color:#38bdf8;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin-left:25px;
+    transition:.3s;
+}
+
+nav a:hover{
+    color:#38bdf8;
+}
+
+.hero{
+    background:linear-gradient(rgba(10,20,40,.75),rgba(10,20,40,.75)),
+    url("https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80") center/cover;
+    height:90vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    color:white;
+}
+
+.hero h1{
+    font-size:60px;
+    margin-bottom:20px;
+}
+
+.hero p{
+    font-size:22px;
+    margin-bottom:35px;
+}
+
+.btn{
+    display:inline-block;
+    padding:15px 35px;
+    background:#0ea5e9;
+    color:white;
+    text-decoration:none;
+    border-radius:5px;
+    margin:10px;
+    transition:.3s;
+}
+
+.btn:hover{
+    background:#0284c7;
+}
+
+.section{
+    padding:80px 8%;
+}
+
+.section h2{
+    text-align:center;
+    margin-bottom:50px;
+    font-size:40px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:30px;
+}
+
+.card{
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+}
+
+.card h3{
+    color:#0ea5e9;
+    margin-bottom:15px;
+}
+
+.stats{
+    background:#0f172a;
+    color:white;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    text-align:center;
+}
+
+.stat{
+    padding:60px 20px;
+}
+
+.stat h2{
+    color:#38bdf8;
+    font-size:42px;
+}
+
+.contact{
+    background:white;
+}
+
+form{
+    max-width:700px;
+    margin:auto;
+}
+
+input,textarea{
+    width:100%;
+    padding:15px;
+    margin-bottom:20px;
+    border:1px solid #ccc;
+    border-radius:5px;
+}
+
+button{
+    background:#0ea5e9;
+    color:white;
+    border:none;
+    padding:15px 35px;
+    cursor:pointer;
+    border-radius:5px;
+}
+
+footer{
+    background:#111827;
+    color:#ccc;
+    text-align:center;
+    padding:30px;
+}
+
+@media(max-width:768px){
+
+.hero h1{
+    font-size:38px;
+}
+
+.hero p{
+    font-size:18px;
+}
+
+nav{
+    display:none;
+}
+
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">CloudNova</div>
+
+<nav>
+<a href="#">Home</a>
+<a href="#services">Services</a>
+<a href="#about">About</a>
+<a href="#contact">Contact</a>
+</nav>
+
+</header>
+
+<section class="hero">
+
+<div>
+
+<h1>Enterprise Cloud & DevOps Solutions</h1>
+
+<p>Building secure, scalable and highly available infrastructure on AWS.</p>
+
+<a class="btn" href="#">Start Project</a>
+<a class="btn" href="#">Contact Us</a>
+
+</div>
+
+</section>
+
+<section class="section" id="services">
+
+<h2>Our Services</h2>
+
+<div class="cards">
+
+<div class="card">
+<h3>☁ AWS Cloud</h3>
+<p>VPC, EC2, Auto Scaling, Load Balancer, Route53, CloudFront, RDS and IAM implementation.</p>
+</div>
+
+<div class="card">
+<h3>🐳 Docker & Kubernetes</h3>
+<p>Containerization, Docker Compose, Kubernetes deployments and production-ready architecture.</p>
+</div>
+
+<div class="card">
+<h3>⚙ DevOps Automation</h3>
+<p>CI/CD pipelines, GitHub Actions, Jenkins, Ansible and Infrastructure as Code.</p>
+</div>
+
+<div class="card">
+<h3>🔒 Cyber Security</h3>
+<p>Firewalls, VPN, Vulnerability Assessment, Hardening and Infrastructure Monitoring.</p>
+</div>
+
+</div>
+
+</section>
+
+<section class="stats">
+
+<div class="stat">
+<h2>500+</h2>
+<p>Projects Delivered</p>
+</div>
+
+<div class="stat">
+<h2>120+</h2>
+<p>Enterprise Clients</p>
+</div>
+
+<div class="stat">
+<h2>99.99%</h2>
+<p>Infrastructure Uptime</p>
+</div>
+
+<div class="stat">
+<h2>24/7</h2>
+<p>Support</p>
+</div>
+
+</section>
+
+<section class="section contact" id="contact">
+
+<h2>Contact Us</h2>
+
+<form>
+
+<input type="text" placeholder="Your Name">
+
+<input type="email" placeholder="Email Address">
+
+<textarea rows="6" placeholder="Your Message"></textarea>
+
+<button>Send Message</button>
+
+</form>
+
+</section>
+
+<footer>
+
+<h3>CloudNova Technologies</h3>
+
+<p>Cloud • DevOps • Security • Automation</p>
+
+<p>© 2026 All Rights Reserved</p>
+
+</footer>
+
+</body>
+</html>
