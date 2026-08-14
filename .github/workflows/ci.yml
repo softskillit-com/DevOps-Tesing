@@ -13,5 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Test
-        run: echo "GitHub Action is running successfully!"
+      - name: Validate Docker Compose
+        run: docker compose config
+
+      - name: Build website1
+        run: docker build ./website1
+
+      - name: Build website2
+        run: docker build ./website2
+
+      - name: Build website3
+        run: docker build ./website3
