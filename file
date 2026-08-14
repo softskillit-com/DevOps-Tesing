@@ -1,6 +1,0 @@
-git checkout develop
-git pull origin develop
-
-git branch -d feature/website1
-
-git push origin --delete feature/website1
