@@ -17,10 +17,10 @@ jobs:
         run: docker compose config
 
       - name: Build website1
-        run: docker build ./website1
+        run: docker build --progress=plain ./website1
 
       - name: Build website2
-        run: docker build ./website2
+        run: docker build --progress=plain ./website2
 
       - name: Build website3
-        run: docker build ./website3
+        run: docker build --progress=plain ./website3
