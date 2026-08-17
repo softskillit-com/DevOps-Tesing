@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>my-site — shipped in a container</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1220;
+    --surface:#121C30;
+    --line: rgba(233,237,245,0.09);
+    --brass:#D98E2B;
+    --brass-soft: rgba(217,142,43,0.14);
+    --teal:#3FA9A0;
+    --foam:#E9EDF5;
+    --slate:#8291AA;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --sans: 'Inter', -apple-system, sans-serif;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--ink);
+    color:var(--foam);
+    font-family:var(--sans);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  ::selection{ background:var(--brass-soft); color:var(--foam); }
+
+  a{ color:inherit; }
+
+  .wrap{ max-width:1080px; margin:0 auto; padding:0 32px; }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    backdrop-filter: blur(10px);
+    background: rgba(11,18,32,0.75);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{
+    height:64px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .brand{
+    font-family:var(--mono); font-weight:600; font-size:15px;
+    display:flex; align-items:center; gap:10px; letter-spacing:0.01em;
+  }
+  .brand .dot{ width:8px; height:8px; border-radius:2px; background:var(--brass); }
+  .navlinks{ display:flex; gap:28px; font-size:14px; color:var(--slate); }
+  .navlinks a{ text-decoration:none; transition:color .15s; }
+  .navlinks a:hover{ color:var(--foam); }
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    padding:100px 0 80px;
+    border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    font-family:var(--mono); font-size:12.5px; color:var(--teal);
+    text-transform:uppercase; letter-spacing:0.14em;
+    display:flex; align-items:center; gap:10px; margin-bottom:22px;
+  }
+  .eyebrow::before{
+    content:''; width:16px; height:1px; background:var(--teal);
+  }
+  h1{
+    font-family:var(--mono);
+    font-size:clamp(34px, 5.4vw, 58px);
+    line-height:1.08;
+    font-weight:700;
+    letter-spacing:-0.01em;
+    max-width:820px;
+  }
+  h1 .accent{ color:var(--brass); }
+  .lede{
+    margin-top:22px; max-width:560px;
+    font-size:17px; color:var(--slate);
+  }
+  .hero-actions{ margin-top:36px; display:flex; gap:14px; flex-wrap:wrap; }
+
+  .btn{
+    font-family:var(--mono); font-size:13.5px; font-weight:500;
+    padding:12px 20px; border-radius:6px; text-decoration:none;
+    display:inline-flex; align-items:center; gap:8px;
+    transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    border:1px solid transparent;
+  }
+  .btn-primary{ background:var(--brass); color:#1a1204; }
+  .btn-primary:hover{ transform:translateY(-1px); background:#e59c3f; }
+  .btn-ghost{ border-color:var(--line); color:var(--foam); }
+  .btn-ghost:hover{ border-color:var(--slate); }
+
+  /* terminal */
+  .terminal{
+    margin-top:56px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    max-width:640px;
+  }
+  .terminal-bar{
+    display:flex; align-items:center; gap:7px;
+    padding:11px 14px; border-bottom:1px solid var(--line);
+  }
+  .terminal-bar span{ width:10px; height:10px; border-radius:50%; background:#2a3650; }
+  .terminal-bar .name{
+    margin-left:8px; font-family:var(--mono); font-size:12px; color:var(--slate);
+  }
+  .terminal-body{
+    padding:18px 20px 22px; font-family:var(--mono); font-size:13.5px;
+  }
+  .terminal-body .line{ color:var(--slate); margin-bottom:6px; }
+  .terminal-body .prompt{ color:var(--teal); }
+  .terminal-body .out{ color:var(--foam); opacity:0.85; }
+  .caret{
+    display:inline-block; width:7px; height:15px; background:var(--brass);
+    vertical-align:middle; margin-left:2px;
+    animation:blink 1s step-end infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* ---------- LAYER STACK (signature) ---------- */
+  section.stack{ padding:88px 0; border-bottom:1px solid var(--line); }
+  .section-head{ margin-bottom:52px; max-width:600px; }
+  .section-head .eyebrow{ margin-bottom:14px; }
+  h2{
+    font-family:var(--mono); font-size:clamp(24px,3vw,32px); font-weight:600;
+  }
+  .section-head p{ margin-top:14px; color:var(--slate); font-size:15.5px; }
+
+  .stack-visual{
+    display:flex; flex-direction:column-reverse;
+    gap:10px; max-width:640px;
+  }
+  .layer{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-left:3px solid var(--brass);
+    border-radius:6px;
+    padding:16px 20px;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:20px;
+    opacity:0; transform:translateY(14px);
+    animation: rise 0.55s ease forwards;
+  }
+  .layer:nth-child(1){ animation-delay:0.05s; }
+  .layer:nth-child(2){ animation-delay:0.25s; }
+  .layer:nth-child(3){ animation-delay:0.45s; }
+  .layer:nth-child(4){ animation-delay:0.65s; }
+  .layer:nth-child(5){ animation-delay:0.85s; }
+  @keyframes rise{ to{ opacity:1; transform:translateY(0); } }
+
+  .layer code{
+    font-family:var(--mono); font-size:13.5px; color:var(--foam);
+  }
+  .layer .tag{
+    font-family:var(--mono); font-size:11px; color:var(--slate);
+    white-space:nowrap; border:1px solid var(--line); padding:3px 8px; border-radius:4px;
+  }
+
+  /* ---------- FEATURES ---------- */
+  section.features{ padding:88px 0; border-bottom:1px solid var(--line); }
+  .grid{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden;
+  }
+  .feature{
+    background:var(--ink); padding:30px 26px;
+  }
+  .feature .icon{
+    width:34px; height:34px; border-radius:7px; background:var(--brass-soft);
+    display:flex; align-items:center; justify-content:center; margin-bottom:18px;
+    color:var(--brass); font-family:var(--mono); font-weight:700; font-size:14px;
+  }
+  .feature h3{ font-size:15.5px; font-weight:600; margin-bottom:8px; }
+  .feature p{ font-size:14px; color:var(--slate); line-height:1.55; }
+
+  /* ---------- PIPELINE ---------- */
+  section.pipeline{ padding:88px 0; border-bottom:1px solid var(--line); }
+  .pipe{
+    display:flex; align-items:center; overflow-x:auto; gap:0; padding-bottom:6px;
+  }
+  .pipe-step{
+    flex:0 0 auto; min-width:150px;
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .pipe-num{
+    font-family:var(--mono); font-size:11px; color:var(--brass);
+    border:1px solid var(--brass); width:26px; height:26px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .pipe-step h4{ font-size:14.5px; font-weight:600; }
+  .pipe-step p{ font-size:12.5px; color:var(--slate); }
+  .pipe-arrow{ color:var(--line); font-size:20px; padding:0 14px; flex:0 0 auto; margin-top:2px; }
+
+  /* ---------- FOOTER ---------- */
+  footer{ padding:44px 0; }
+  footer .wrap{
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+  }
+  footer .meta{ font-family:var(--mono); font-size:12.5px; color:var(--slate); }
+  .badges{ display:flex; gap:8px; }
+  .badge{
+    font-family:var(--mono); font-size:11px; color:var(--slate);
+    border:1px solid var(--line); padding:5px 10px; border-radius:5px;
+  }
+
+  @media (max-width: 760px){
+    .grid{ grid-template-columns:1fr; }
+    .navlinks{ display:none; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .layer{ animation:none; opacity:1; transform:none; }
+    .caret{ animation:none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span>my-site</div>
+    <div class="navlinks">
+      <a href="#stack">Image</a>
+      <a href="#features">Stack</a>
+      <a href="#pipeline">Pipeline</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">status: running</div>
+    <h1>Built once.<br>Shipped <span class="accent">everywhere</span> the same way.</h1>
+    <p class="lede">A static site packaged into a single Docker image, served by Nginx, and rebuilt automatically on every push — so what runs in production is exactly what ran on your laptop.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#stack">See the image layers →</a>
+      <a class="btn btn-ghost" href="#pipeline">View the pipeline</a>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span></span><span></span><span></span>
+        <span class="name">zsh</span>
+      </div>
+      <div class="terminal-body">
+        <div class="line"><span class="prompt">$</span> docker compose up --build</div>
+        <div class="line out">[+] Building 1.2s (8/8) FINISHED</div>
+        <div class="line out">✓ my-site running at http://localhost:8080</div>
+        <div class="line"><span class="prompt">$</span><span class="caret"></span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="stack" id="stack">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">the image</div>
+      <h2>Four layers, one artifact</h2>
+      <p>Each instruction in the Dockerfile adds a cached layer. Change the HTML and only that layer rebuilds — everything below it is reused.</p>
+    </div>
+
+    <div class="stack-visual">
+      <div class="layer">
+        <code>FROM nginx:alpine</code>
+        <span class="tag">base image</span>
+      </div>
+      <div class="layer">
+        <code>RUN rm -rf /usr/share/nginx/html/*</code>
+        <span class="tag">clean root</span>
+      </div>
+      <div class="layer">
+        <code>COPY index.html /usr/share/nginx/html/</code>
+        <span class="tag">your code</span>
+      </div>
+      <div class="layer">
+        <code>EXPOSE 80</code>
+        <span class="tag">network</span>
+      </div>
+      <div class="layer">
+        <code>CMD ["nginx", "-g", "daemon off;"]</code>
+        <span class="tag">entrypoint</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">runtime</div>
+      <h2>What's holding this page up</h2>
+    </div>
+    <div class="grid">
+      <div class="feature">
+        <div class="icon">D</div>
+        <h3>Docker</h3>
+        <p>Nginx Alpine base, ~24MB image, no host dependencies beyond the Docker engine itself.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">C</div>
+        <h3>Compose</h3>
+        <p>Port 8080 mapped to container port 80, capped at 0.5 vCPU and 128MB memory.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">A</div>
+        <h3>Actions</h3>
+        <p>Every push to develop or main triggers a fresh build, cached and pushed to GHCR.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pipeline" id="pipeline">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">delivery</div>
+      <h2>From branch to registry</h2>
+    </div>
+    <div class="pipe">
+      <div class="pipe-step">
+        <div class="pipe-num">1</div>
+        <h4>feature/*</h4>
+        <p>Local work, isolated</p>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">
+        <div class="pipe-num">2</div>
+        <h4>Pull request</h4>
+        <p>Build verified in CI</p>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">
+        <div class="pipe-num">3</div>
+        <h4>develop</h4>
+        <p>Merged and integrated</p>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">
+        <div class="pipe-num">4</div>
+        <h4>main</h4>
+        <p>Production-ready</p>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">
+        <div class="pipe-num">5</div>
+        <h4>GHCR</h4>
+        <p>Image published</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="meta">my-site · served on port 8080</div>
+    <div class="badges">
+      <span class="badge">nginx:alpine</span>
+      <span class="badge">docker compose</span>
+      <span class="badge">ghcr.io</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
