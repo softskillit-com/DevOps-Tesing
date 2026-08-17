@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate Docker Compose
+        run: docker compose config
+
+      - name: Build website1
+        run: docker build --progress=plain ./website1
+
+      - name: Build website2
+        run: docker build --progress=plain ./website2
+
+      - name: Build website3
+        run: docker build --progress=plain ./website3
