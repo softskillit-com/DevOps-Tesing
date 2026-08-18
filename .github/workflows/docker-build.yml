@@ -32,8 +32,8 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
-          context: ./web-git
+          context: ./web-git-pro
           push: ${{ github.event_name == 'push' }}
-          tags: ahsanchoudhery/my-site:latest
+          tags: ahsanchoudhery/devops-cheatsheet
           cache-from: type=gha
           cache-to: type=gha,mode=max

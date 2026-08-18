@@ -1,0 +1,12 @@
+services:
+  web:
+    image: devops-cheatsheet:latest
+    container_name: devops-cheatsheet
+    ports:
+      - "8080:80"        # host:container -> visit http://localhost:8080
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"      # max half a CPU core
+          memory: "128M"   # max 128 MB RAM
