@@ -3,7 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Docker &amp; Git/GitHub — Command Reference</title>
+<title>CmdRef — Docker &amp; Git/GitHub Command Reference</title>
+<meta name="description" content="A searchable, level-filtered reference for Docker, Git, GitHub, Docker Compose, and CI/CD — from day-one basics to production-grade advanced usage.">
+<meta name="theme-color" content="#0a0e14">
+<meta property="og:title" content="CmdRef — Docker & Git/GitHub Command Reference">
+<meta property="og:description" content="150+ commands spanning basic to advanced: Docker, Git, GitHub CLI, Compose, and CI/CD workflows.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0e14'/%3E%3Ctext x='32' y='42' font-family='monospace' font-size='30' font-weight='700' fill='%2322bcf2' text-anchor='middle'%3E%3E_%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -34,14 +40,25 @@
     min-height:100vh;
   }
   ::selection{ background: var(--docker-blue); color:#00131a; }
+  :focus-visible{ outline: 2px solid var(--docker-blue); outline-offset: 2px; }
+  html{ scroll-behavior: smooth; }
 
   a{color:var(--docker-blue);}
 
-  /* ---------- Top bar ---------- */
+  .skip-link{
+    position:absolute; left:-999px; top:0;
+    background:var(--docker-blue); color:#00131a;
+    padding:10px 16px; border-radius:6px; z-index:200;
+    font-family:'JetBrains Mono', monospace; font-size:13px;
+  }
+  .skip-link:focus{ left:16px; top:16px; }
+
+  /* ---------- Top nav ---------- */
   .topbar{
     border-bottom:1px solid var(--border);
-    background: rgba(17,22,29,0.7);
-    backdrop-filter: blur(8px);
+    background: rgba(17,22,29,0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     position: sticky;
     top:0;
     z-index:50;
@@ -49,21 +66,100 @@
   .topbar-inner{
     max-width:1180px;
     margin:0 auto;
-    padding:14px 24px;
+    padding:12px 24px;
     display:flex;
     align-items:center;
+    justify-content:space-between;
     gap:14px;
+    position:relative;
   }
-  .dots{ display:flex; gap:6px; }
-  .dot{ width:11px; height:11px; border-radius:50%; }
-  .dot.r{background:#ff5f56;} .dot.y{background:#ffbd2e;} .dot.g{background:#27c93f;}
-  .topbar-title{
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+  }
+  .brand-mark{
+    width:28px; height:28px;
+    border-radius:7px;
+    background: linear-gradient(135deg, var(--docker-blue), var(--git-orange));
+    display:flex; align-items:center; justify-content:center;
     font-family:'JetBrains Mono', monospace;
+    font-weight:700;
     font-size:13px;
-    color:var(--text-dim);
-    letter-spacing:0.02em;
+    color:#050709;
+    flex-shrink:0;
   }
-  .topbar-title span{ color:var(--accent-green); }
+  .brand-name{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:15px;
+    color:var(--text);
+    letter-spacing:-0.01em;
+  }
+  .brand-name span{ color:var(--text-dim); font-weight:500; }
+  .nav-links{
+    display:flex;
+    align-items:center;
+    gap:22px;
+  }
+  .nav-links a{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    color:var(--text-dim);
+    text-decoration:none;
+    transition: color .15s ease;
+  }
+  .nav-links a:hover{ color:var(--text); }
+  .status-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--accent-green);
+    border:1px solid rgba(57,211,83,0.3);
+    background:rgba(57,211,83,0.08);
+    border-radius:20px;
+    padding:4px 10px;
+  }
+  .status-pill .dotpulse{
+    width:6px; height:6px; border-radius:50%;
+    background:var(--accent-green);
+    box-shadow: 0 0 0 3px rgba(57,211,83,0.18);
+  }
+  @media (max-width: 640px){
+    .nav-links{
+      display:none;
+      position:absolute;
+      top:100%; left:0; right:0;
+      background: var(--panel);
+      border-bottom:1px solid var(--border);
+      flex-direction:column;
+      align-items:flex-start;
+      gap:0;
+      padding:8px 0;
+    }
+    .nav-links.open{ display:flex; }
+    .nav-links a, .nav-links .status-pill{
+      padding:10px 24px;
+      width:100%;
+    }
+    .nav-links .status-pill{ border-radius:0; border:none; border-top:1px solid var(--border); margin-top:4px; }
+    .menu-toggle{ display:inline-flex; }
+  }
+  .menu-toggle{
+    display:none;
+    background:none;
+    border:1px solid var(--border);
+    border-radius:6px;
+    color:var(--text-dim);
+    width:34px; height:34px;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    font-size:16px;
+  }
 
   /* ---------- Hero / terminal ---------- */
   .hero{
@@ -298,8 +394,63 @@
     margin: 28px 0 14px;
     padding-top:10px;
     border-top:1px dashed var(--border);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    scroll-margin-top: 140px;
   }
   .section-heading:first-child{ border-top:none; padding-top:0; margin-top:0; }
+  .section-count{
+    font-family:'JetBrains Mono', monospace;
+    text-transform:none;
+    letter-spacing:0;
+    font-size:11px;
+    color:var(--text-dim);
+    background: var(--panel);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:2px 8px;
+  }
+
+  .cat-chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:24px;
+  }
+  .cat-chip{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    color:var(--text-dim);
+    text-decoration:none;
+    border:1px solid var(--border);
+    background: var(--panel);
+    border-radius:20px;
+    padding:6px 12px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    transition: color .15s ease, border-color .15s ease;
+  }
+  .cat-chip:hover{ color:var(--text); border-color:var(--text-dim); }
+  .cat-chip span{
+    color:var(--text-dim);
+    font-size:10px;
+    background: rgba(255,255,255,0.06);
+    border-radius:10px;
+    padding:1px 6px;
+  }
+
+  .kbd-hint{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    color:var(--text-dim);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:1px 6px;
+    background: var(--panel-2);
+    flex-shrink:0;
+  }
 
   .grid{
     display:grid;
@@ -314,6 +465,11 @@
     border-radius:8px;
     padding:14px 16px;
     transition: border-left-color .15s ease, background .15s ease, transform .15s ease;
+    animation: cardIn .35s ease backwards;
+  }
+  @keyframes cardIn{
+    from{ opacity:0; transform: translateY(6px); }
+    to{ opacity:1; transform: translateY(0); }
   }
   .card:hover{ transform: translateY(-2px); background: var(--panel-2); }
   .card.docker:hover{ border-left-color: var(--docker-blue); }
@@ -358,7 +514,7 @@
   }
   .card-example{
     display:flex;
-    align-items:center;
+    align-items:flex-start;
     justify-content:space-between;
     gap:8px;
     font-family:'JetBrains Mono', monospace;
@@ -369,10 +525,11 @@
     padding:8px 10px;
   }
   .card-example span{
-    overflow-x:auto;
-    white-space:pre;
+    white-space:pre-wrap;
+    word-break:break-word;
+    line-height:1.5;
   }
-  .card-example .copy-btn{ flex-shrink:0; }
+  .card-example .copy-btn{ flex-shrink:0; margin-top:1px; }
   .card-example .cmt{ color:#4d5560; }
 
   .level-badge{
@@ -436,22 +593,65 @@
     font-family:'JetBrains Mono', monospace;
     font-size:12px;
   }
+  .footer-inner{ display:inline-flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+  .footer-sep{ opacity:0.4; }
+
+  .to-top{
+    position:fixed;
+    bottom:24px;
+    right:24px;
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background: var(--panel);
+    border:1px solid var(--border);
+    color:var(--text-dim);
+    font-size:18px;
+    cursor:pointer;
+    box-shadow: var(--shadow);
+    opacity:0;
+    pointer-events:none;
+    transform: translateY(8px);
+    transition: opacity .2s ease, transform .2s ease, color .15s ease, border-color .15s ease;
+    z-index:60;
+  }
+  .to-top.show{ opacity:1; pointer-events:auto; transform: translateY(0); }
+  .to-top:hover{ color:var(--docker-blue); border-color:var(--docker-blue); }
 
   @media (prefers-reduced-motion: reduce){
     .cursor{ animation:none; }
+    html{ scroll-behavior:auto; }
+  }
+
+  @media print{
+    .topbar, .to-top, .level-filter, .search-row, .tabs, .term{ display:none !important; }
+    .panel-section{ display:block !important; }
+    body{ background: #fff; color:#111; }
+    .card{ break-inside: avoid; border-color:#ccc; }
   }
 </style>
 </head>
 <body>
 
+  <a href="#main" class="skip-link">Skip to content</a>
+
   <div class="topbar">
     <div class="topbar-inner">
-      <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-      <div class="topbar-title">~/reference <span>$</span> docker &amp; git command reference</div>
+      <a href="#main" class="brand">
+        <span class="brand-mark">&gt;_</span>
+        <span class="brand-name">CmdRef <span>/ docker &amp; git</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="#panel-docker" data-nav="docker">Docker</a>
+        <a href="#panel-git" data-nav="git">Git &amp; GitHub</a>
+        <a href="#panel-bonus" data-nav="bonus">Compose &amp; CI/CD</a>
+        <span class="status-pill"><span class="dotpulse"></span>150+ commands</span>
+      </div>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
     </div>
   </div>
 
-  <div class="hero">
+  <div class="hero" id="main">
     <div>
       <div class="eyebrow"><span class="pulse"></span>Basic → Advanced</div>
       <h1>Master <span class="hl-docker">Docker</span> and <span class="hl-git">Git</span> without leaving one tab.</h1>
@@ -483,6 +683,7 @@
       <div class="search-box">
         <span class="prompt">/</span>
         <input id="search" type="text" placeholder="filter commands… e.g. 'compose', 'push', 'rebase'">
+        <span class="kbd-hint">/</span>
       </div>
       <div class="count-pill"><span id="count">0</span> commands shown</div>
     </div>
@@ -503,22 +704,19 @@
 
     <!-- ================= DOCKER ================= -->
     <section class="panel-section active" id="panel-docker">
-      <div class="section-heading">Images &amp; Containers</div>
-      <div class="grid" id="grid-docker"></div>
+      <div id="grid-docker-container"></div>
     </section>
 
     <!-- ================= GIT / GITHUB ================= -->
     <section class="panel-section" id="panel-git">
-      <div class="section-heading">Git core commands</div>
-      <div class="grid" id="grid-git"></div>
+      <div id="grid-git-container"></div>
     </section>
 
     <!-- ================= BONUS ================= -->
     <section class="panel-section" id="panel-bonus">
-      <div class="section-heading">Docker Compose commands</div>
-      <div class="grid" id="grid-compose"></div>
+      <div id="grid-compose-container"></div>
 
-      <div class="section-heading">GitHub CLI (gh) essentials</div>
+      <div class="section-heading">GitHub CLI (gh) essentials <span class="section-count" id="ghcli-count"></span></div>
       <div class="grid" id="grid-ghcli"></div>
 
       <div class="section-heading">Sample: build &amp; push image via GitHub Actions</div>
@@ -606,152 +804,162 @@
     <div class="empty-state" id="empty">no matching commands — try a different search term</div>
   </div>
 
-  <footer>built as a static reference · works fully offline · no data leaves this page</footer>
+  <button id="toTop" class="to-top" aria-label="Back to top" title="Back to top">↑</button>
+
+  <footer>
+    <div class="footer-inner">
+      <span>CmdRef · built as a static reference</span>
+      <span class="footer-sep">·</span>
+      <span>works fully offline</span>
+      <span class="footer-sep">·</span>
+      <span>no data leaves this page</span>
+    </div>
+  </footer>
 
 <script>
 /* ============ DATA ============ */
 const docker = [
-["attach","Attach local streams to a running container.","docker attach my_container","basic"],
-["build","Build an image from a Dockerfile.","docker build -t myapp:latest .","basic"],
-["commit","Create a new image from a container's changes.","docker commit my_container myapp:v2","intermediate"],
-["compose","Run multi-container apps defined in a compose file (see Compose &amp; CI/CD tab).","docker compose up -d","basic"],
-["cp","Copy files/folders between a container and the local filesystem.","docker cp my_container:/app/log.txt ./log.txt","basic"],
-["create","Create a container without starting it.","docker create --name my_container myapp","basic"],
-["diff","Inspect changes to files/dirs on a container's filesystem.","docker diff my_container","intermediate"],
-["events","Get real-time events from the Docker daemon.","docker events","intermediate"],
-["exec","Run a command inside a running container.","docker exec -it my_container bash","basic"],
-["export","Export a container's filesystem as a tar archive.","docker export my_container > app.tar","intermediate"],
-["history","Show the build history of an image.","docker history myapp:latest","intermediate"],
-["images","List locally stored images.","docker images","basic"],
-["import","Import the contents from a tarball to create an image.","docker import app.tar myapp:imported","intermediate"],
-["info","Display system-wide Docker information.","docker info","basic"],
-["inspect","Return low-level info on containers/images.","docker inspect my_container","intermediate"],
-["kill","Kill one or more running containers.","docker kill my_container","intermediate"],
-["load","Load an image from a tar archive or STDIN.","docker load -i myapp.tar","intermediate"],
-["login","Log in to a Docker registry (e.g. Docker Hub).","docker login -u myuser","basic"],
-["logout","Log out from a Docker registry.","docker logout","basic"],
-["logs","Fetch the logs of a container.","docker logs -f my_container","basic"],
-["network","Manage Docker networks.","docker network ls","intermediate"],
-["pause","Pause all processes within a container.","docker pause my_container","intermediate"],
-["port","List port mappings for a container.","docker port my_container","basic"],
-["ps","List running containers (add -a for all).","docker ps -a","basic"],
-["pull","Pull an image from a registry.","docker pull nginx:latest","basic"],
-["push","Push an image to a registry.","docker push myuser/myapp:latest","basic"],
-["rename","Rename a container.","docker rename old_name new_name","basic"],
-["restart","Restart one or more containers.","docker restart my_container","basic"],
-["rm","Remove one or more containers.","docker rm my_container","basic"],
-["rmi","Remove one or more images.","docker rmi myapp:latest","basic"],
-["run","Create and start a new container from an image.","docker run -d -p 8080:80 --name web myapp","basic"],
-["save","Save an image to a tar archive.","docker save myapp:latest -o myapp.tar","intermediate"],
-["search","Search Docker Hub for images.","docker search nginx","basic"],
-["start","Start one or more stopped containers.","docker start my_container","basic"],
-["stats","Show live resource usage stats for containers.","docker stats","intermediate"],
-["stop","Stop one or more running containers.","docker stop my_container","basic"],
-["tag","Tag an image into a repository.","docker tag myapp:latest myuser/myapp:v1","basic"],
-["top","Display the running processes of a container.","docker top my_container","intermediate"],
-["unpause","Unpause all processes within a container.","docker unpause my_container","intermediate"],
-["update","Update configuration of one or more containers.","docker update --restart=always my_container","intermediate"],
-["version","Show Docker version information.","docker version","basic"],
-["volume","Manage Docker volumes.","docker volume ls","intermediate"],
-["wait","Block until a container stops, then print its exit code.","docker wait my_container","intermediate"],
-["buildx build","Build multi-platform images with BuildKit.","docker buildx build --platform linux/amd64,linux/arm64 -t myuser/myapp:latest --push .","advanced"],
-["buildx bake","Build multiple images/targets from a declarative bake file.","docker buildx bake -f docker-bake.hcl","advanced"],
-["buildx imagetools","Inspect a multi-arch manifest list on a registry.","docker buildx imagetools inspect myuser/myapp:latest","advanced"],
-["manifest create","Compose a multi-arch manifest list from per-arch images.","docker manifest create myuser/myapp:latest myuser/myapp:amd64 myuser/myapp:arm64","advanced"],
-["manifest push","Push a manifest list to a registry.","docker manifest push myuser/myapp:latest","advanced"],
-["context create","Define a remote Docker endpoint (e.g. a build server).","docker context create prod --docker \"host=ssh://user@server\"","advanced"],
-["context use","Switch the active Docker context.","docker context use prod","advanced"],
-["swarm init","Initialize the current node as a Swarm manager.","docker swarm init --advertise-addr 10.0.0.5","advanced"],
-["service create","Create a replicated service in a Swarm cluster.","docker service create --name web --replicas 3 -p 80:80 myapp","advanced"],
-["service scale","Scale a running Swarm service up or down.","docker service scale web=5","advanced"],
-["stack deploy","Deploy a full stack from a compose file to Swarm.","docker stack deploy -c docker-compose.yml myapp","advanced"],
-["secret create","Store sensitive data for Swarm services to consume.","docker secret create db_password ./password.txt","advanced"],
-["node ls","List nodes participating in a Swarm cluster.","docker node ls","advanced"],
-["system prune","Reclaim disk space by removing unused data.","docker system prune -a --volumes","advanced"],
-["builder prune","Remove build cache to free up space.","docker builder prune --all","advanced"],
-["scout cves","Scan an image for known vulnerabilities (Docker Scout).","docker scout cves myapp:latest","advanced"],
-["trust sign","Sign an image for content trust before pushing.","docker trust sign myuser/myapp:latest","advanced"],
+["attach","Attach local streams to a running container.","docker attach my_container","basic","Container Lifecycle"],
+["build","Build an image from a Dockerfile.","docker build -t myapp:latest .","basic","Image Management"],
+["commit","Create a new image from a container's changes.","docker commit my_container myapp:v2","intermediate","Image Management"],
+["compose","Run multi-container apps defined in a compose file (see Compose &amp; CI/CD tab).","docker compose up -d","basic","Container Lifecycle"],
+["cp","Copy files/folders between a container and the local filesystem.","docker cp my_container:/app/log.txt ./log.txt","basic","Networking &amp; Storage"],
+["create","Create a container without starting it.","docker create --name my_container myapp","basic","Container Lifecycle"],
+["diff","Inspect changes to files/dirs on a container's filesystem.","docker diff my_container","intermediate","Image Management"],
+["events","Get real-time events from the Docker daemon.","docker events","intermediate","System &amp; Monitoring"],
+["exec","Run a command inside a running container.","docker exec -it my_container bash","basic","Container Lifecycle"],
+["export","Export a container's filesystem as a tar archive.","docker export my_container > app.tar","intermediate","Image Management"],
+["history","Show the build history of an image.","docker history myapp:latest","intermediate","Image Management"],
+["images","List locally stored images.","docker images","basic","Image Management"],
+["import","Import the contents from a tarball to create an image.","docker import app.tar myapp:imported","intermediate","Image Management"],
+["info","Display system-wide Docker information.","docker info","basic","System &amp; Monitoring"],
+["inspect","Return low-level info on containers/images.","docker inspect my_container","intermediate","Container Lifecycle"],
+["kill","Kill one or more running containers.","docker kill my_container","intermediate","Container Lifecycle"],
+["load","Load an image from a tar archive or STDIN.","docker load -i myapp.tar","intermediate","Image Management"],
+["login","Log in to a Docker registry (e.g. Docker Hub).","docker login -u myuser","basic","Registry &amp; Distribution"],
+["logout","Log out from a Docker registry.","docker logout","basic","Registry &amp; Distribution"],
+["logs","Fetch the logs of a container.","docker logs -f my_container","basic","Container Lifecycle"],
+["network","Manage Docker networks.","docker network ls","intermediate","Networking &amp; Storage"],
+["pause","Pause all processes within a container.","docker pause my_container","intermediate","Container Lifecycle"],
+["port","List port mappings for a container.","docker port my_container","basic","Networking &amp; Storage"],
+["ps","List running containers (add -a for all).","docker ps -a","basic","Container Lifecycle"],
+["pull","Pull an image from a registry.","docker pull nginx:latest","basic","Registry &amp; Distribution"],
+["push","Push an image to a registry.","docker push myuser/myapp:latest","basic","Registry &amp; Distribution"],
+["rename","Rename a container.","docker rename old_name new_name","basic","Container Lifecycle"],
+["restart","Restart one or more containers.","docker restart my_container","basic","Container Lifecycle"],
+["rm","Remove one or more containers.","docker rm my_container","basic","Container Lifecycle"],
+["rmi","Remove one or more images.","docker rmi myapp:latest","basic","Image Management"],
+["run","Create and start a new container from an image.","docker run -d -p 8080:80 --name web myapp","basic","Container Lifecycle"],
+["save","Save an image to a tar archive.","docker save myapp:latest -o myapp.tar","intermediate","Image Management"],
+["search","Search Docker Hub for images.","docker search nginx","basic","Registry &amp; Distribution"],
+["start","Start one or more stopped containers.","docker start my_container","basic","Container Lifecycle"],
+["stats","Show live resource usage stats for containers.","docker stats","intermediate","System &amp; Monitoring"],
+["stop","Stop one or more running containers.","docker stop my_container","basic","Container Lifecycle"],
+["tag","Tag an image into a repository.","docker tag myapp:latest myuser/myapp:v1","basic","Image Management"],
+["top","Display the running processes of a container.","docker top my_container","intermediate","Container Lifecycle"],
+["unpause","Unpause all processes within a container.","docker unpause my_container","intermediate","Container Lifecycle"],
+["update","Update configuration of one or more containers.","docker update --restart=always my_container","intermediate","Container Lifecycle"],
+["version","Show Docker version information.","docker version","basic","System &amp; Monitoring"],
+["volume","Manage Docker volumes.","docker volume ls","intermediate","Networking &amp; Storage"],
+["wait","Block until a container stops, then print its exit code.","docker wait my_container","intermediate","Container Lifecycle"],
+["buildx build","Build multi-platform images with BuildKit.","docker buildx build --platform linux/amd64,linux/arm64 -t myuser/myapp:latest --push .","advanced","Advanced Builds &amp; Multi-Arch"],
+["buildx bake","Build multiple images/targets from a declarative bake file.","docker buildx bake -f docker-bake.hcl","advanced","Advanced Builds &amp; Multi-Arch"],
+["buildx imagetools","Inspect a multi-arch manifest list on a registry.","docker buildx imagetools inspect myuser/myapp:latest","advanced","Advanced Builds &amp; Multi-Arch"],
+["manifest create","Compose a multi-arch manifest list from per-arch images.","docker manifest create myuser/myapp:latest myuser/myapp:amd64 myuser/myapp:arm64","advanced","Advanced Builds &amp; Multi-Arch"],
+["manifest push","Push a manifest list to a registry.","docker manifest push myuser/myapp:latest","advanced","Advanced Builds &amp; Multi-Arch"],
+["context create","Define a remote Docker endpoint (e.g. a build server).","docker context create prod --docker \"host=ssh://user@server\"","advanced","Advanced Builds &amp; Multi-Arch"],
+["context use","Switch the active Docker context.","docker context use prod","advanced","Advanced Builds &amp; Multi-Arch"],
+["swarm init","Initialize the current node as a Swarm manager.","docker swarm init --advertise-addr 10.0.0.5","advanced","Orchestration (Swarm)"],
+["service create","Create a replicated service in a Swarm cluster.","docker service create --name web --replicas 3 -p 80:80 myapp","advanced","Orchestration (Swarm)"],
+["service scale","Scale a running Swarm service up or down.","docker service scale web=5","advanced","Orchestration (Swarm)"],
+["stack deploy","Deploy a full stack from a compose file to Swarm.","docker stack deploy -c docker-compose.yml myapp","advanced","Orchestration (Swarm)"],
+["secret create","Store sensitive data for Swarm services to consume.","docker secret create db_password ./password.txt","advanced","Orchestration (Swarm)"],
+["node ls","List nodes participating in a Swarm cluster.","docker node ls","advanced","Orchestration (Swarm)"],
+["system prune","Reclaim disk space by removing unused data.","docker system prune -a --volumes","advanced","System &amp; Monitoring"],
+["builder prune","Remove build cache to free up space.","docker builder prune --all","advanced","System &amp; Monitoring"],
+["scout cves","Scan an image for known vulnerabilities (Docker Scout).","docker scout cves myapp:latest","advanced","Security &amp; Trust"],
+["trust sign","Sign an image for content trust before pushing.","docker trust sign myuser/myapp:latest","advanced","Security &amp; Trust"],
 ];
 
 const git = [
-["add","Stage file changes for the next commit.","git add .","basic"],
-["bisect","Binary search through history to find a bad commit.","git bisect start","intermediate"],
-["blame","Show who last modified each line of a file.","git blame index.js","intermediate"],
-["branch","List, create, or delete branches.","git branch feature/login","basic"],
-["checkout","Switch branches or restore working-tree files.","git checkout feature/login","basic"],
-["cherry-pick","Apply the changes from a specific commit onto the current branch.","git cherry-pick a1b2c3d","intermediate"],
-["clean","Remove untracked files from the working tree.","git clean -fd","intermediate"],
-["clone","Clone a repository into a new directory.","git clone https://github.com/user/repo.git","basic"],
-["commit","Record staged changes to the repository.","git commit -m \"fix: handle null response\"","basic"],
-["config","Get or set repository/user configuration.","git config --global user.name \"Ali\"","basic"],
-["diff","Show changes between commits, working tree, etc.","git diff HEAD~1","basic"],
-["fetch","Download objects/refs from another repository.","git fetch origin","basic"],
-["gc","Clean up unnecessary files and optimize the repository.","git gc","intermediate"],
-["grep","Search tracked files for a pattern.","git grep \"TODO\"","intermediate"],
-["init","Create a new, empty Git repository.","git init","basic"],
-["log","Show the commit history.","git log --oneline --graph","basic"],
-["merge","Join two or more development histories together.","git merge feature/login","intermediate"],
-["mv","Move or rename a file, and stage the change.","git mv old.js new.js","basic"],
-["pull","Fetch and integrate changes from a remote branch.","git pull origin main","basic"],
-["push","Update the remote repository with local commits.","git push origin main","basic"],
-["rebase","Reapply commits on top of another base branch.","git rebase main","intermediate"],
-["reflog","Show a log of where HEAD and branches have pointed.","git reflog","intermediate"],
-["remote","Manage the set of tracked remote repositories.","git remote add origin https://github.com/user/repo.git","basic"],
-["reset","Reset current HEAD to a specified state.","git reset --hard HEAD~1","intermediate"],
-["restore","Restore working-tree files to a previous state.","git restore --staged file.js","basic"],
-["revert","Create a new commit that undoes a previous commit.","git revert a1b2c3d","intermediate"],
-["rm","Remove files from the working tree and index.","git rm old-file.txt","basic"],
-["show","Show details of a commit, tag, or object.","git show a1b2c3d","basic"],
-["stash","Temporarily shelve uncommitted changes.","git stash pop","intermediate"],
-["status","Show the state of the working directory and staging area.","git status","basic"],
-["submodule","Manage nested Git repositories within a repository.","git submodule update --init","intermediate"],
-["switch","Switch to an existing or new branch.","git switch -c feature/login","basic"],
-["tag","Create, list, or delete tags for release points.","git tag v1.0.0","basic"],
-["rebase -i","Interactively reorder, squash, edit, or drop commits.","git rebase -i HEAD~5","advanced"],
-["worktree","Check out multiple branches into separate working directories at once.","git worktree add ../hotfix hotfix/urgent-bug","advanced"],
-["filter-repo","Rewrite history to purge a file or secret from every commit.","git filter-repo --path secrets.env --invert-paths","advanced"],
-["bisect run","Automate bisection by running a test script at each step.","git bisect run npm test","advanced"],
-["rerere","Reuse recorded conflict resolutions automatically on repeat merges.","git config rerere.enabled true","advanced"],
-["notes","Attach metadata to a commit without altering it.","git notes add -m \"Reviewed by QA\" a1b2c3d","advanced"],
-["cat-file","Inspect the raw content and type of any Git object.","git cat-file -p a1b2c3d","advanced"],
-["hash-object","Compute the SHA-1 of a file as Git would store it.","git hash-object -w largefile.bin","advanced"],
-["sparse-checkout","Check out only part of a large repository's working tree.","git sparse-checkout set services/api","advanced"],
-["maintenance","Schedule background repo optimization (gc, prefetch, commit-graph).","git maintenance start","advanced"],
-["range-diff","Compare two versions of a rebased commit series.","git range-diff main~5..main main~3..feature","advanced"],
-["merge --squash","Combine an entire branch into a single new commit.","git merge --squash feature/login","advanced"],
-["subtree","Embed and manage another repository as a subdirectory.","git subtree add --prefix=libs/shared git@github.com:org/shared.git main","advanced"],
-["am","Apply a series of patches from mailbox-formatted files.","git am 0001-fix-bug.patch","advanced"],
-["describe","Generate a human-readable name from the nearest tag.","git describe --tags --always","advanced"],
+["add","Stage file changes for the next commit.","git add .","basic","Staging &amp; Commits"],
+["bisect","Binary search through history to find a bad commit.","git bisect start","intermediate","Debugging &amp; Inspection"],
+["blame","Show who last modified each line of a file.","git blame index.js","intermediate","Debugging &amp; Inspection"],
+["branch","List, create, or delete branches.","git branch feature/login","basic","Branching &amp; Merging"],
+["checkout","Switch branches or restore working-tree files.","git checkout feature/login","basic","Branching &amp; Merging"],
+["cherry-pick","Apply the changes from a specific commit onto the current branch.","git cherry-pick a1b2c3d","intermediate","Branching &amp; Merging"],
+["clean","Remove untracked files from the working tree.","git clean -fd","intermediate","Staging &amp; Commits"],
+["clone","Clone a repository into a new directory.","git clone https://github.com/user/repo.git","basic","Repository Setup"],
+["commit","Record staged changes to the repository.","git commit -m \"fix: handle null response\"","basic","Staging &amp; Commits"],
+["config","Get or set repository/user configuration.","git config --global user.name \"Ali\"","basic","Repository Setup"],
+["diff","Show changes between commits, working tree, etc.","git diff HEAD~1","basic","Debugging &amp; Inspection"],
+["fetch","Download objects/refs from another repository.","git fetch origin","basic","Remote Operations"],
+["gc","Clean up unnecessary files and optimize the repository.","git gc","intermediate","Repository Setup"],
+["grep","Search tracked files for a pattern.","git grep \"TODO\"","intermediate","Debugging &amp; Inspection"],
+["init","Create a new, empty Git repository.","git init","basic","Repository Setup"],
+["log","Show the commit history.","git log --oneline --graph","basic","Debugging &amp; Inspection"],
+["merge","Join two or more development histories together.","git merge feature/login","intermediate","Branching &amp; Merging"],
+["mv","Move or rename a file, and stage the change.","git mv old.js new.js","basic","Staging &amp; Commits"],
+["pull","Fetch and integrate changes from a remote branch.","git pull origin main","basic","Remote Operations"],
+["push","Update the remote repository with local commits.","git push origin main","basic","Remote Operations"],
+["rebase","Reapply commits on top of another base branch.","git rebase main","intermediate","Branching &amp; Merging"],
+["reflog","Show a log of where HEAD and branches have pointed.","git reflog","intermediate","Debugging &amp; Inspection"],
+["remote","Manage the set of tracked remote repositories.","git remote add origin https://github.com/user/repo.git","basic","Remote Operations"],
+["reset","Reset current HEAD to a specified state.","git reset --hard HEAD~1","intermediate","Staging &amp; Commits"],
+["restore","Restore working-tree files to a previous state.","git restore --staged file.js","basic","Staging &amp; Commits"],
+["revert","Create a new commit that undoes a previous commit.","git revert a1b2c3d","intermediate","Staging &amp; Commits"],
+["rm","Remove files from the working tree and index.","git rm old-file.txt","basic","Staging &amp; Commits"],
+["show","Show details of a commit, tag, or object.","git show a1b2c3d","basic","Debugging &amp; Inspection"],
+["stash","Temporarily shelve uncommitted changes.","git stash pop","intermediate","Staging &amp; Commits"],
+["status","Show the state of the working directory and staging area.","git status","basic","Debugging &amp; Inspection"],
+["submodule","Manage nested Git repositories within a repository.","git submodule update --init","intermediate","Repository Setup"],
+["switch","Switch to an existing or new branch.","git switch -c feature/login","basic","Branching &amp; Merging"],
+["tag","Create, list, or delete tags for release points.","git tag v1.0.0","basic","Staging &amp; Commits"],
+["rebase -i","Interactively reorder, squash, edit, or drop commits.","git rebase -i HEAD~5","advanced","History Rewriting"],
+["worktree","Check out multiple branches into separate working directories at once.","git worktree add ../hotfix hotfix/urgent-bug","advanced","Advanced Workflows"],
+["filter-repo","Rewrite history to purge a file or secret from every commit.","git filter-repo --path secrets.env --invert-paths","advanced","History Rewriting"],
+["bisect run","Automate bisection by running a test script at each step.","git bisect run npm test","advanced","Debugging &amp; Inspection"],
+["rerere","Reuse recorded conflict resolutions automatically on repeat merges.","git config rerere.enabled true","advanced","Advanced Workflows"],
+["notes","Attach metadata to a commit without altering it.","git notes add -m \"Reviewed by QA\" a1b2c3d","advanced","Advanced Workflows"],
+["cat-file","Inspect the raw content and type of any Git object.","git cat-file -p a1b2c3d","advanced","Debugging &amp; Inspection"],
+["hash-object","Compute the SHA-1 of a file as Git would store it.","git hash-object -w largefile.bin","advanced","Debugging &amp; Inspection"],
+["sparse-checkout","Check out only part of a large repository's working tree.","git sparse-checkout set services/api","advanced","Advanced Workflows"],
+["maintenance","Schedule background repo optimization (gc, prefetch, commit-graph).","git maintenance start","advanced","Repository Setup"],
+["range-diff","Compare two versions of a rebased commit series.","git range-diff main~5..main main~3..feature","advanced","History Rewriting"],
+["merge --squash","Combine an entire branch into a single new commit.","git merge --squash feature/login","advanced","History Rewriting"],
+["subtree","Embed and manage another repository as a subdirectory.","git subtree add --prefix=libs/shared git@github.com:org/shared.git main","advanced","Advanced Workflows"],
+["am","Apply a series of patches from mailbox-formatted files.","git am 0001-fix-bug.patch","advanced","History Rewriting"],
+["describe","Generate a human-readable name from the nearest tag.","git describe --tags --always","advanced","Debugging &amp; Inspection"],
 ];
 
 const compose = [
-["build","Build or rebuild services defined in the compose file.","docker compose build","basic"],
-["config","Validate and view the resolved compose configuration.","docker compose config","intermediate"],
-["down","Stop and remove containers, networks created by up.","docker compose down","basic"],
-["events","Stream real-time events from containers.","docker compose events","intermediate"],
-["exec","Run a command inside a running service container.","docker compose exec web bash","basic"],
-["images","List images used by the created containers.","docker compose images","basic"],
-["kill","Force-stop service containers.","docker compose kill","intermediate"],
-["logs","View output from services.","docker compose logs -f","basic"],
-["pause","Pause services.","docker compose pause","intermediate"],
-["ps","List containers for the compose project.","docker compose ps","basic"],
-["pull","Pull service images from a registry.","docker compose pull","basic"],
-["push","Push service images to a registry.","docker compose push","intermediate"],
-["restart","Restart service containers.","docker compose restart","basic"],
-["rm","Remove stopped service containers.","docker compose rm","intermediate"],
-["run","Run a one-off command in a service.","docker compose run web python manage.py migrate","intermediate"],
-["start","Start existing service containers.","docker compose start","basic"],
-["stop","Stop running service containers without removing them.","docker compose stop","basic"],
-["top","Display running processes for services.","docker compose top","intermediate"],
-["unpause","Unpause services.","docker compose unpause","intermediate"],
-["up","Create and start all services (add -d to detach).","docker compose up -d --build","basic"],
-["version","Show the Docker Compose version.","docker compose version","basic"],
-["--profile","Start only services tagged under a given profile.","docker compose --profile debug up -d","advanced"],
-["--scale","Run multiple instances of a service.","docker compose up -d --scale worker=3","advanced"],
-["watch","Auto-rebuild and sync services when source files change.","docker compose watch","advanced"],
-["cp","Copy files between a service container and the host.","docker compose cp web:/app/data.json ./data.json","advanced"],
-["-f (multiple files)","Layer a base file with environment-specific overrides.","docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d","advanced"],
-["config --resolve-image-digests","Pin the resolved compose config to exact image digests.","docker compose config --resolve-image-digests","advanced"],
+["build","Build or rebuild services defined in the compose file.","docker compose build","basic","Build &amp; Config"],
+["config","Validate and view the resolved compose configuration.","docker compose config","intermediate","Build &amp; Config"],
+["down","Stop and remove containers, networks created by up.","docker compose down","basic","Lifecycle"],
+["events","Stream real-time events from containers.","docker compose events","intermediate","Runtime &amp; Debugging"],
+["exec","Run a command inside a running service container.","docker compose exec web bash","basic","Runtime &amp; Debugging"],
+["images","List images used by the created containers.","docker compose images","basic","Images &amp; Registry"],
+["kill","Force-stop service containers.","docker compose kill","intermediate","Lifecycle"],
+["logs","View output from services.","docker compose logs -f","basic","Runtime &amp; Debugging"],
+["pause","Pause services.","docker compose pause","intermediate","Lifecycle"],
+["ps","List containers for the compose project.","docker compose ps","basic","Runtime &amp; Debugging"],
+["pull","Pull service images from a registry.","docker compose pull","basic","Images &amp; Registry"],
+["push","Push service images to a registry.","docker compose push","intermediate","Images &amp; Registry"],
+["restart","Restart service containers.","docker compose restart","basic","Lifecycle"],
+["rm","Remove stopped service containers.","docker compose rm","intermediate","Lifecycle"],
+["run","Run a one-off command in a service.","docker compose run web python manage.py migrate","intermediate","Runtime &amp; Debugging"],
+["start","Start existing service containers.","docker compose start","basic","Lifecycle"],
+["stop","Stop running service containers without removing them.","docker compose stop","basic","Lifecycle"],
+["top","Display running processes for services.","docker compose top","intermediate","Runtime &amp; Debugging"],
+["unpause","Unpause services.","docker compose unpause","intermediate","Lifecycle"],
+["up","Create and start all services (add -d to detach).","docker compose up -d --build","basic","Lifecycle"],
+["version","Show the Docker Compose version.","docker compose version","basic","Build &amp; Config"],
+["--profile","Start only services tagged under a given profile.","docker compose --profile debug up -d","advanced","Advanced Usage"],
+["--scale","Run multiple instances of a service.","docker compose up -d --scale worker=3","advanced","Advanced Usage"],
+["watch","Auto-rebuild and sync services when source files change.","docker compose watch","advanced","Advanced Usage"],
+["cp","Copy files between a service container and the host.","docker compose cp web:/app/data.json ./data.json","advanced","Advanced Usage"],
+["-f (multiple files)","Layer a base file with environment-specific overrides.","docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d","advanced","Advanced Usage"],
+["config --resolve-image-digests","Pin the resolved compose config to exact image digests.","docker compose config --resolve-image-digests","advanced","Advanced Usage"],
 ];
 
 const ghcli = [
@@ -774,12 +982,11 @@ const ghcli = [
 ];
 
 /* ============ RENDER ============ */
-function renderGrid(containerId, items, cls){
-  const el = document.getElementById(containerId);
-  el.innerHTML = items.map(([cmd, desc, ex, level]) => `
+function cardHtml(cls, containerHint, cmd, desc, ex, level){
+  return `
     <div class="card ${cls}" data-level="${level}" data-search="${(cmd+' '+desc+' '+ex+' '+level).toLowerCase()}">
       <div class="card-top">
-        <span class="card-cmd">${cls==='docker' ? 'docker '+cmd : (cls==='git' ? 'git '+cmd : (containerId==='grid-compose' ? 'compose '+cmd : cmd))}</span>
+        <span class="card-cmd">${cls==='docker' ? 'docker '+cmd : (cls==='git' ? 'git '+cmd : (containerHint==='grid-compose-container' ? 'compose '+cmd : cmd))}</span>
         <span class="level-badge lvl-${level}">${level}</span>
       </div>
       <p class="card-desc">${desc}</p>
@@ -788,11 +995,47 @@ function renderGrid(containerId, items, cls){
         <button class="copy-btn" onclick="copyCmd(this, ${JSON.stringify(ex)})">copy</button>
       </div>
     </div>
-  `).join('');
+  `;
 }
-renderGrid('grid-docker', docker, 'docker');
-renderGrid('grid-git', git, 'git');
-renderGrid('grid-compose', compose, 'bonus');
+
+function renderGrid(containerId, items, cls){
+  const el = document.getElementById(containerId);
+  el.innerHTML = items.map(([cmd, desc, ex, level]) => cardHtml(cls, containerId, cmd, desc, ex, level)).join('');
+  const countEl = document.getElementById(containerId.replace('grid-','').replace('-container','')+'-count');
+  if(countEl) countEl.textContent = items.length;
+}
+
+/* Groups items by their 5th tuple field (category) and renders each as its own headed grid */
+function renderCategorizedGrid(containerId, items, cls){
+  const el = document.getElementById(containerId);
+  const order = [];
+  const groups = {};
+  items.forEach(([cmd, desc, ex, level, category]) => {
+    if(!groups[category]){ groups[category] = []; order.push(category); }
+    groups[category].push([cmd, desc, ex, level]);
+  });
+
+  const chips = order.map(category => {
+    const anchor = 'cat-' + containerId + '-' + category.replace(/[^a-zA-Z0-9]+/g,'-').toLowerCase();
+    return `<a href="#${anchor}" class="cat-chip">${category} <span>${groups[category].length}</span></a>`;
+  }).join('');
+
+  const sections = order.map(category => {
+    const anchor = 'cat-' + containerId + '-' + category.replace(/[^a-zA-Z0-9]+/g,'-').toLowerCase();
+    return `
+    <div class="section-heading" id="${anchor}">${category} <span class="section-count">${groups[category].length}</span></div>
+    <div class="grid">
+      ${groups[category].map(([cmd, desc, ex, level]) => cardHtml(cls, containerId, cmd, desc, ex, level)).join('')}
+    </div>
+  `;
+  }).join('');
+
+  el.innerHTML = `<div class="cat-chips">${chips}</div>${sections}`;
+}
+
+renderCategorizedGrid('grid-docker-container', docker, 'docker');
+renderCategorizedGrid('grid-git-container', git, 'git');
+renderCategorizedGrid('grid-compose-container', compose, 'bonus');
 renderGrid('grid-ghcli', ghcli, 'bonus');
 
 function copyCmd(btn, text){
@@ -814,14 +1057,39 @@ function copyYaml(btn, id){
 /* ============ TABS ============ */
 const tabButtons = document.querySelectorAll('.tab-btn');
 const panels = document.querySelectorAll('.panel-section');
+function activateTab(tabName){
+  tabButtons.forEach(b=>b.classList.toggle('active', b.dataset.tab === tabName));
+  panels.forEach(p=>p.classList.toggle('active', p.id === 'panel-'+tabName));
+  updateCount();
+}
 tabButtons.forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    tabButtons.forEach(b=>b.classList.remove('active'));
-    panels.forEach(p=>p.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
-    updateCount();
+  btn.addEventListener('click', ()=> activateTab(btn.dataset.tab));
+});
+
+/* Nav links in the top bar jump to + activate the right tab */
+document.querySelectorAll('.nav-links a[data-nav]').forEach(link=>{
+  link.addEventListener('click', (e)=>{
+    e.preventDefault();
+    activateTab(link.dataset.nav);
+    document.getElementById('main').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.querySelector('.nav-links').classList.remove('open');
   });
+});
+
+/* Mobile hamburger toggle */
+const menuToggle = document.getElementById('menuToggle');
+const navLinksEl = document.querySelector('.nav-links');
+menuToggle.addEventListener('click', ()=>{
+  navLinksEl.classList.toggle('open');
+});
+
+/* ============ BACK TO TOP ============ */
+const toTopBtn = document.getElementById('toTop');
+window.addEventListener('scroll', ()=>{
+  toTopBtn.classList.toggle('show', window.scrollY > 500);
+});
+toTopBtn.addEventListener('click', ()=>{
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 /* ============ SEARCH + LEVEL FILTER ============ */
@@ -851,6 +1119,20 @@ function updateCount(){
 }
 
 searchInput.addEventListener('input', applyFilters);
+
+/* ============ KEYBOARD SHORTCUTS ============ */
+document.addEventListener('keydown', (e)=>{
+  const tag = document.activeElement.tagName;
+  const isTyping = tag === 'INPUT' || tag === 'TEXTAREA';
+  if(e.key === '/' && !isTyping){
+    e.preventDefault();
+    searchInput.focus();
+  } else if(e.key === 'Escape' && document.activeElement === searchInput){
+    searchInput.value = '';
+    applyFilters();
+    searchInput.blur();
+  }
+});
 
 levelButtons.forEach(btn=>{
   btn.addEventListener('click', ()=>{
