@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docker &amp; Git/GitHub — Command Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0e14;
+    --panel: #11161d;
+    --panel-2: #151b23;
+    --border: #232a35;
+    --text: #c9d1d9;
+    --text-dim: #6e7681;
+    --docker-blue: #22bcf2;
+    --docker-blue-dim: rgba(34,188,242,0.12);
+    --git-orange: #f56a4c;
+    --git-orange-dim: rgba(245,106,76,0.12);
+    --accent-green: #39d353;
+    --shadow: 0 8px 24px rgba(0,0,0,0.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 15% 0%, rgba(34,188,242,0.06), transparent 40%),
+      radial-gradient(circle at 85% 10%, rgba(245,106,76,0.06), transparent 40%),
+      var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    min-height:100vh;
+  }
+  ::selection{ background: var(--docker-blue); color:#00131a; }
+
+  a{color:var(--docker-blue);}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    border-bottom:1px solid var(--border);
+    background: rgba(17,22,29,0.7);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top:0;
+    z-index:50;
+  }
+  .topbar-inner{
+    max-width:1180px;
+    margin:0 auto;
+    padding:14px 24px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .dots{ display:flex; gap:6px; }
+  .dot{ width:11px; height:11px; border-radius:50%; }
+  .dot.r{background:#ff5f56;} .dot.y{background:#ffbd2e;} .dot.g{background:#27c93f;}
+  .topbar-title{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:var(--text-dim);
+    letter-spacing:0.02em;
+  }
+  .topbar-title span{ color:var(--accent-green); }
+
+  /* ---------- Hero / terminal ---------- */
+  .hero{
+    max-width:1180px;
+    margin: 56px auto 40px;
+    padding: 0 24px;
+    display:grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap:48px;
+    align-items:center;
+  }
+  @media (max-width: 880px){ .hero{ grid-template-columns: 1fr; gap:32px; margin-top:32px;} }
+
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:6px 12px 6px 10px;
+    margin-bottom:20px;
+  }
+  .eyebrow .pulse{
+    width:6px; height:6px; border-radius:50%;
+    background:var(--accent-green);
+    box-shadow: 0 0 0 3px rgba(57,211,83,0.15);
+  }
+  .hero h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-size: clamp(32px, 4.2vw, 52px);
+    line-height:1.06;
+    margin:0 0 18px;
+    font-weight:700;
+    letter-spacing:-0.02em;
+  }
+  .hero h1 .hl-docker{ color:var(--docker-blue); }
+  .hero h1 .hl-git{ color:var(--git-orange); }
+  .hero p{
+    color:var(--text-dim);
+    font-size:16px;
+    line-height:1.65;
+    max-width:46ch;
+    margin:0 0 28px;
+  }
+  .hero-stats{
+    display:flex;
+    gap:0;
+    border-top:1px solid var(--border);
+    padding-top:20px;
+  }
+  .stat{
+    padding-right:28px;
+    margin-right:28px;
+    border-right:1px solid var(--border);
+  }
+  .stat:last-child{ border-right:none; margin-right:0; padding-right:0; }
+  .stat-num{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:24px;
+    font-weight:700;
+    color:var(--text);
+    display:block;
+    line-height:1.2;
+  }
+  .stat-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--text-dim);
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+  }
+
+  .term{
+    background: var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    box-shadow: var(--shadow);
+    overflow:hidden;
+  }
+  .term-bar{
+    display:flex; align-items:center; gap:8px;
+    padding:10px 14px;
+    background: var(--panel-2);
+    border-bottom:1px solid var(--border);
+  }
+  .term-bar span.name{
+    margin-left:8px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--text-dim);
+  }
+  .term-body{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13.5px;
+    line-height:1.9;
+    padding:18px 20px;
+    min-height:210px;
+  }
+  .term-body .prompt{ color:var(--accent-green); }
+  .term-body .path{ color:var(--docker-blue); }
+  .term-line{ white-space:pre; }
+  .cursor{
+    display:inline-block;
+    width:8px; height:15px;
+    background:var(--accent-green);
+    vertical-align:-2px;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* ---------- Controls ---------- */
+  .controls{
+    max-width:1180px;
+    margin: 0 auto 8px;
+    padding: 0 24px;
+  }
+  .search-row{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    align-items:center;
+    margin-bottom:18px;
+  }
+  .search-box{
+    flex:1;
+    min-width:240px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background: var(--panel);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:10px 14px;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .search-box .prompt{ color:var(--accent-green); }
+  .search-box input{
+    flex:1;
+    background:transparent;
+    border:none;
+    outline:none;
+    color:var(--text);
+    font-family:'JetBrains Mono', monospace;
+    font-size:14px;
+  }
+  .search-box input::placeholder{ color:var(--text-dim); }
+  .count-pill{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--text-dim);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:8px 14px;
+    white-space:nowrap;
+  }
+
+  .level-filter{
+    display:flex;
+    gap:6px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+  }
+  .level-btn{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    background: var(--panel);
+    border:1px solid var(--border);
+    color:var(--text-dim);
+    border-radius:20px;
+    padding:6px 14px;
+    cursor:pointer;
+    transition: all .15s ease;
+  }
+  .level-btn:hover{ color:var(--text); }
+  .level-btn.active{ color:var(--bg); background:var(--text); border-color:var(--text); }
+  .level-btn.active[data-level="basic"]{ background:#39d353; border-color:#39d353; }
+  .level-btn.active[data-level="intermediate"]{ background:#e3b341; border-color:#e3b341; }
+  .level-btn.active[data-level="advanced"]{ background:#f56a4c; border-color:#f56a4c; }
+
+  .tabs{
+    display:flex;
+    gap:8px;
+    border-bottom:1px solid var(--border);
+    margin-bottom:28px;
+    flex-wrap:wrap;
+  }
+  .tab-btn{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    background:none;
+    border:none;
+    color:var(--text-dim);
+    padding:12px 18px;
+    cursor:pointer;
+    position:relative;
+    top:1px;
+    border-bottom:2px solid transparent;
+    transition: color .15s ease;
+  }
+  .tab-btn:hover{ color:var(--text); }
+  .tab-btn.active{ color:var(--text); }
+  .tab-btn[data-tab="docker"].active{ border-color: var(--docker-blue); }
+  .tab-btn[data-tab="git"].active{ border-color: var(--git-orange); }
+  .tab-btn[data-tab="bonus"].active{ border-color: var(--accent-green); }
+  .tab-btn .dotcolor{
+    display:inline-block; width:7px; height:7px; border-radius:50%;
+    margin-right:8px; vertical-align:1px;
+  }
+  .tab-btn[data-tab="docker"] .dotcolor{ background:var(--docker-blue); }
+  .tab-btn[data-tab="git"] .dotcolor{ background:var(--git-orange); }
+  .tab-btn[data-tab="bonus"] .dotcolor{ background:var(--accent-green); }
+
+  /* ---------- Cheatsheet grid ---------- */
+  .wrap{ max-width:1180px; margin:0 auto; padding: 0 24px 80px; }
+  .panel-section{ display:none; }
+  .panel-section.active{ display:block; }
+
+  .section-heading{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    color:var(--text-dim);
+    margin: 28px 0 14px;
+    padding-top:10px;
+    border-top:1px dashed var(--border);
+  }
+  .section-heading:first-child{ border-top:none; padding-top:0; margin-top:0; }
+
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap:12px;
+  }
+
+  .card{
+    background: var(--panel);
+    border:1px solid var(--border);
+    border-left:2px solid var(--border);
+    border-radius:8px;
+    padding:14px 16px;
+    transition: border-left-color .15s ease, background .15s ease, transform .15s ease;
+  }
+  .card:hover{ transform: translateY(-2px); background: var(--panel-2); }
+  .card.docker:hover{ border-left-color: var(--docker-blue); }
+  .card.git:hover{ border-left-color: var(--git-orange); }
+  .card.bonus:hover{ border-left-color: var(--accent-green); }
+
+  .card-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:8px;
+  }
+  .card-cmd{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:600;
+    font-size:13.5px;
+  }
+  .card.docker .card-cmd{ color: var(--docker-blue); }
+  .card.git .card-cmd{ color: var(--git-orange); }
+  .card.bonus .card-cmd{ color: var(--accent-green); }
+
+  .copy-btn{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    background: var(--panel-2);
+    border:1px solid var(--border);
+    color:var(--text-dim);
+    border-radius:5px;
+    padding:4px 8px;
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .copy-btn:hover{ color:var(--text); border-color:var(--text-dim); }
+  .copy-btn.copied{ color:var(--accent-green); border-color:var(--accent-green); }
+
+  .card-desc{
+    font-size:13px;
+    color:var(--text);
+    line-height:1.5;
+    margin:0 0 10px;
+  }
+  .card-example{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--text-dim);
+    background: rgba(0,0,0,0.25);
+    border-radius:6px;
+    padding:8px 10px;
+  }
+  .card-example span{
+    overflow-x:auto;
+    white-space:pre;
+  }
+  .card-example .copy-btn{ flex-shrink:0; }
+  .card-example .cmt{ color:#4d5560; }
+
+  .level-badge{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    padding:3px 8px;
+    border-radius:20px;
+    flex-shrink:0;
+    border:1px solid transparent;
+  }
+  .level-badge.lvl-basic{ color:#39d353; background:rgba(57,211,83,0.1); border-color:rgba(57,211,83,0.25); }
+  .level-badge.lvl-intermediate{ color:#e3b341; background:rgba(227,179,65,0.1); border-color:rgba(227,179,65,0.25); }
+  .level-badge.lvl-advanced{ color:#f56a4c; background:rgba(245,106,76,0.1); border-color:rgba(245,106,76,0.25); }
+
+  .empty-state{
+    text-align:center;
+    color:var(--text-dim);
+    font-family:'JetBrains Mono', monospace;
+    padding:60px 20px;
+    display:none;
+  }
+  .empty-state.show{ display:block; }
+
+  /* YAML block for bonus section */
+  .yaml-block{
+    background: var(--panel);
+    border:1px solid var(--border);
+    border-radius:9px;
+    overflow:hidden;
+    margin-bottom:20px;
+  }
+  .yaml-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 16px;
+    background: var(--panel-2);
+    border-bottom:1px solid var(--border);
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--text-dim);
+  }
+  .yaml-body{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    line-height:1.7;
+    padding:16px;
+    overflow-x:auto;
+    white-space:pre;
+    color:var(--text);
+  }
+  .yaml-body .k{ color:var(--docker-blue); }
+  .yaml-body .s{ color:var(--accent-green); }
+  .yaml-body .c{ color:#4d5560; }
+
+  footer{
+    border-top:1px solid var(--border);
+    text-align:center;
+    padding:26px 20px 40px;
+    color:var(--text-dim);
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .cursor{ animation:none; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+      <div class="topbar-title">~/reference <span>$</span> docker &amp; git command reference</div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div>
+      <div class="eyebrow"><span class="pulse"></span>Basic → Advanced</div>
+      <h1>Master <span class="hl-docker">Docker</span> and <span class="hl-git">Git</span> without leaving one tab.</h1>
+      <p>A precise, searchable reference spanning day-one basics through production-grade advanced usage: multi-stage builds, Swarm, interactive rebases, and multi-arch CI/CD pipelines. Filter by level or search by command.</p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">60+</span><span class="stat-label">Docker commands</span></div>
+        <div class="stat"><span class="stat-num">50</span><span class="stat-label">Git commands</span></div>
+        <div class="stat"><span class="stat-num">40+</span><span class="stat-label">Compose &amp; gh CLI</span></div>
+      </div>
+    </div>
+    <div class="term">
+      <div class="term-bar">
+        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+        <span class="name">workflow.sh</span>
+      </div>
+      <div class="term-body">
+        <div class="term-line"><span class="prompt">$</span> docker build -t myapp:latest .</div>
+        <div class="term-line"><span class="prompt">$</span> docker compose up -d</div>
+        <div class="term-line"><span class="prompt">$</span> git add . &amp;&amp; git commit -m "deploy"</div>
+        <div class="term-line"><span class="prompt">$</span> git push origin main</div>
+        <div class="term-line"><span class="prompt">$</span> <span class="path">gh</span> run watch</div>
+        <div class="term-line">✔ image pushed to Docker Hub<span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="search-row">
+      <div class="search-box">
+        <span class="prompt">/</span>
+        <input id="search" type="text" placeholder="filter commands… e.g. 'compose', 'push', 'rebase'">
+      </div>
+      <div class="count-pill"><span id="count">0</span> commands shown</div>
+    </div>
+    <div class="level-filter">
+      <button class="level-btn active" data-level="all">All levels</button>
+      <button class="level-btn" data-level="basic">Basic</button>
+      <button class="level-btn" data-level="intermediate">Intermediate</button>
+      <button class="level-btn" data-level="advanced">Advanced</button>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="docker"><span class="dotcolor"></span>Docker</button>
+      <button class="tab-btn" data-tab="git"><span class="dotcolor"></span>Git &amp; GitHub</button>
+      <button class="tab-btn" data-tab="bonus"><span class="dotcolor"></span>Compose &amp; CI/CD</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- ================= DOCKER ================= -->
+    <section class="panel-section active" id="panel-docker">
+      <div class="section-heading">Images &amp; Containers</div>
+      <div class="grid" id="grid-docker"></div>
+    </section>
+
+    <!-- ================= GIT / GITHUB ================= -->
+    <section class="panel-section" id="panel-git">
+      <div class="section-heading">Git core commands</div>
+      <div class="grid" id="grid-git"></div>
+    </section>
+
+    <!-- ================= BONUS ================= -->
+    <section class="panel-section" id="panel-bonus">
+      <div class="section-heading">Docker Compose commands</div>
+      <div class="grid" id="grid-compose"></div>
+
+      <div class="section-heading">GitHub CLI (gh) essentials</div>
+      <div class="grid" id="grid-ghcli"></div>
+
+      <div class="section-heading">Sample: build &amp; push image via GitHub Actions</div>
+      <div class="yaml-block">
+        <div class="yaml-head">
+          <span>.github/workflows/docker-publish.yml</span>
+          <button class="copy-btn" onclick="copyYaml(this)">copy</button>
+        </div>
+        <div class="yaml-body" id="yaml-content"><span class="k">name</span>: <span class="s">Build and Push Docker Image</span>
+
+<span class="k">on</span>:
+  <span class="k">push</span>:
+    <span class="k">branches</span>: [<span class="s">main</span>]
+
+<span class="k">jobs</span>:
+  <span class="k">build-and-push</span>:
+    <span class="k">runs-on</span>: <span class="s">ubuntu-latest</span>
+    <span class="k">steps</span>:
+      - <span class="k">name</span>: <span class="s">Checkout code</span>
+        <span class="k">uses</span>: <span class="s">actions/checkout@v4</span>
+
+      - <span class="k">name</span>: <span class="s">Log in to Docker Hub</span>
+        <span class="k">uses</span>: <span class="s">docker/login-action@v3</span>
+        <span class="k">with</span>:
+          <span class="k">username</span>: <span class="s">${{ secrets.DOCKERHUB_USERNAME }}</span>
+          <span class="k">password</span>: <span class="s">${{ secrets.DOCKERHUB_TOKEN }}</span>
+
+      - <span class="k">name</span>: <span class="s">Build image</span>
+        <span class="k">run</span>: <span class="s">docker build -t myuser/myapp:latest .</span>
+
+      - <span class="k">name</span>: <span class="s">Push image</span>
+        <span class="k">run</span>: <span class="s">docker push myuser/myapp:latest</span>
+</div>
+      </div>
+
+      <div class="section-heading">Advanced: multi-arch buildx with layer caching</div>
+      <div class="yaml-block">
+        <div class="yaml-head">
+          <span>.github/workflows/docker-publish-advanced.yml</span>
+          <button class="copy-btn" onclick="copyYaml(this, 'yaml-content-2')">copy</button>
+        </div>
+        <div class="yaml-body" id="yaml-content-2"><span class="k">name</span>: <span class="s">Multi-Arch Build and Push</span>
+
+<span class="k">on</span>:
+  <span class="k">push</span>:
+    <span class="k">branches</span>: [<span class="s">main</span>]
+    <span class="k">tags</span>: [<span class="s">'v*'</span>]
+
+<span class="k">concurrency</span>:
+  <span class="k">group</span>: <span class="s">${{ github.workflow }}-${{ github.ref }}</span>
+  <span class="k">cancel-in-progress</span>: <span class="s">true</span>
+
+<span class="k">jobs</span>:
+  <span class="k">build-and-push</span>:
+    <span class="k">runs-on</span>: <span class="s">ubuntu-latest</span>
+    <span class="k">steps</span>:
+      - <span class="k">name</span>: <span class="s">Checkout code</span>
+        <span class="k">uses</span>: <span class="s">actions/checkout@v4</span>
+
+      - <span class="k">name</span>: <span class="s">Set up QEMU</span>
+        <span class="k">uses</span>: <span class="s">docker/setup-qemu-action@v3</span>
+
+      - <span class="k">name</span>: <span class="s">Set up Docker Buildx</span>
+        <span class="k">uses</span>: <span class="s">docker/setup-buildx-action@v3</span>
+
+      - <span class="k">name</span>: <span class="s">Log in to Docker Hub</span>
+        <span class="k">uses</span>: <span class="s">docker/login-action@v3</span>
+        <span class="k">with</span>:
+          <span class="k">username</span>: <span class="s">${{ secrets.DOCKERHUB_USERNAME }}</span>
+          <span class="k">password</span>: <span class="s">${{ secrets.DOCKERHUB_TOKEN }}</span>
+
+      - <span class="k">name</span>: <span class="s">Build and push (amd64 + arm64)</span>
+        <span class="k">uses</span>: <span class="s">docker/build-push-action@v6</span>
+        <span class="k">with</span>:
+          <span class="k">context</span>: <span class="s">.</span>
+          <span class="k">platforms</span>: <span class="s">linux/amd64,linux/arm64</span>
+          <span class="k">push</span>: <span class="s">true</span>
+          <span class="k">tags</span>: <span class="s">myuser/myapp:latest,myuser/myapp:${{ github.sha }}</span>
+          <span class="k">cache-from</span>: <span class="s">type=gha</span>
+          <span class="k">cache-to</span>: <span class="s">type=gha,mode=max</span>
+</div>
+      </div>
+    </section>
+
+    <div class="empty-state" id="empty">no matching commands — try a different search term</div>
+  </div>
+
+  <footer>built as a static reference · works fully offline · no data leaves this page</footer>
+
+<script>
+/* ============ DATA ============ */
+const docker = [
+["attach","Attach local streams to a running container.","docker attach my_container","basic"],
+["build","Build an image from a Dockerfile.","docker build -t myapp:latest .","basic"],
+["commit","Create a new image from a container's changes.","docker commit my_container myapp:v2","intermediate"],
+["compose","Run multi-container apps defined in a compose file (see Compose &amp; CI/CD tab).","docker compose up -d","basic"],
+["cp","Copy files/folders between a container and the local filesystem.","docker cp my_container:/app/log.txt ./log.txt","basic"],
+["create","Create a container without starting it.","docker create --name my_container myapp","basic"],
+["diff","Inspect changes to files/dirs on a container's filesystem.","docker diff my_container","intermediate"],
+["events","Get real-time events from the Docker daemon.","docker events","intermediate"],
+["exec","Run a command inside a running container.","docker exec -it my_container bash","basic"],
+["export","Export a container's filesystem as a tar archive.","docker export my_container > app.tar","intermediate"],
+["history","Show the build history of an image.","docker history myapp:latest","intermediate"],
+["images","List locally stored images.","docker images","basic"],
+["import","Import the contents from a tarball to create an image.","docker import app.tar myapp:imported","intermediate"],
+["info","Display system-wide Docker information.","docker info","basic"],
+["inspect","Return low-level info on containers/images.","docker inspect my_container","intermediate"],
+["kill","Kill one or more running containers.","docker kill my_container","intermediate"],
+["load","Load an image from a tar archive or STDIN.","docker load -i myapp.tar","intermediate"],
+["login","Log in to a Docker registry (e.g. Docker Hub).","docker login -u myuser","basic"],
+["logout","Log out from a Docker registry.","docker logout","basic"],
+["logs","Fetch the logs of a container.","docker logs -f my_container","basic"],
+["network","Manage Docker networks.","docker network ls","intermediate"],
+["pause","Pause all processes within a container.","docker pause my_container","intermediate"],
+["port","List port mappings for a container.","docker port my_container","basic"],
+["ps","List running containers (add -a for all).","docker ps -a","basic"],
+["pull","Pull an image from a registry.","docker pull nginx:latest","basic"],
+["push","Push an image to a registry.","docker push myuser/myapp:latest","basic"],
+["rename","Rename a container.","docker rename old_name new_name","basic"],
+["restart","Restart one or more containers.","docker restart my_container","basic"],
+["rm","Remove one or more containers.","docker rm my_container","basic"],
+["rmi","Remove one or more images.","docker rmi myapp:latest","basic"],
+["run","Create and start a new container from an image.","docker run -d -p 8080:80 --name web myapp","basic"],
+["save","Save an image to a tar archive.","docker save myapp:latest -o myapp.tar","intermediate"],
+["search","Search Docker Hub for images.","docker search nginx","basic"],
+["start","Start one or more stopped containers.","docker start my_container","basic"],
+["stats","Show live resource usage stats for containers.","docker stats","intermediate"],
+["stop","Stop one or more running containers.","docker stop my_container","basic"],
+["tag","Tag an image into a repository.","docker tag myapp:latest myuser/myapp:v1","basic"],
+["top","Display the running processes of a container.","docker top my_container","intermediate"],
+["unpause","Unpause all processes within a container.","docker unpause my_container","intermediate"],
+["update","Update configuration of one or more containers.","docker update --restart=always my_container","intermediate"],
+["version","Show Docker version information.","docker version","basic"],
+["volume","Manage Docker volumes.","docker volume ls","intermediate"],
+["wait","Block until a container stops, then print its exit code.","docker wait my_container","intermediate"],
+["buildx build","Build multi-platform images with BuildKit.","docker buildx build --platform linux/amd64,linux/arm64 -t myuser/myapp:latest --push .","advanced"],
+["buildx bake","Build multiple images/targets from a declarative bake file.","docker buildx bake -f docker-bake.hcl","advanced"],
+["buildx imagetools","Inspect a multi-arch manifest list on a registry.","docker buildx imagetools inspect myuser/myapp:latest","advanced"],
+["manifest create","Compose a multi-arch manifest list from per-arch images.","docker manifest create myuser/myapp:latest myuser/myapp:amd64 myuser/myapp:arm64","advanced"],
+["manifest push","Push a manifest list to a registry.","docker manifest push myuser/myapp:latest","advanced"],
+["context create","Define a remote Docker endpoint (e.g. a build server).","docker context create prod --docker \"host=ssh://user@server\"","advanced"],
+["context use","Switch the active Docker context.","docker context use prod","advanced"],
+["swarm init","Initialize the current node as a Swarm manager.","docker swarm init --advertise-addr 10.0.0.5","advanced"],
+["service create","Create a replicated service in a Swarm cluster.","docker service create --name web --replicas 3 -p 80:80 myapp","advanced"],
+["service scale","Scale a running Swarm service up or down.","docker service scale web=5","advanced"],
+["stack deploy","Deploy a full stack from a compose file to Swarm.","docker stack deploy -c docker-compose.yml myapp","advanced"],
+["secret create","Store sensitive data for Swarm services to consume.","docker secret create db_password ./password.txt","advanced"],
+["node ls","List nodes participating in a Swarm cluster.","docker node ls","advanced"],
+["system prune","Reclaim disk space by removing unused data.","docker system prune -a --volumes","advanced"],
+["builder prune","Remove build cache to free up space.","docker builder prune --all","advanced"],
+["scout cves","Scan an image for known vulnerabilities (Docker Scout).","docker scout cves myapp:latest","advanced"],
+["trust sign","Sign an image for content trust before pushing.","docker trust sign myuser/myapp:latest","advanced"],
+];
+
+const git = [
+["add","Stage file changes for the next commit.","git add .","basic"],
+["bisect","Binary search through history to find a bad commit.","git bisect start","intermediate"],
+["blame","Show who last modified each line of a file.","git blame index.js","intermediate"],
+["branch","List, create, or delete branches.","git branch feature/login","basic"],
+["checkout","Switch branches or restore working-tree files.","git checkout feature/login","basic"],
+["cherry-pick","Apply the changes from a specific commit onto the current branch.","git cherry-pick a1b2c3d","intermediate"],
+["clean","Remove untracked files from the working tree.","git clean -fd","intermediate"],
+["clone","Clone a repository into a new directory.","git clone https://github.com/user/repo.git","basic"],
+["commit","Record staged changes to the repository.","git commit -m \"fix: handle null response\"","basic"],
+["config","Get or set repository/user configuration.","git config --global user.name \"Ali\"","basic"],
+["diff","Show changes between commits, working tree, etc.","git diff HEAD~1","basic"],
+["fetch","Download objects/refs from another repository.","git fetch origin","basic"],
+["gc","Clean up unnecessary files and optimize the repository.","git gc","intermediate"],
+["grep","Search tracked files for a pattern.","git grep \"TODO\"","intermediate"],
+["init","Create a new, empty Git repository.","git init","basic"],
+["log","Show the commit history.","git log --oneline --graph","basic"],
+["merge","Join two or more development histories together.","git merge feature/login","intermediate"],
+["mv","Move or rename a file, and stage the change.","git mv old.js new.js","basic"],
+["pull","Fetch and integrate changes from a remote branch.","git pull origin main","basic"],
+["push","Update the remote repository with local commits.","git push origin main","basic"],
+["rebase","Reapply commits on top of another base branch.","git rebase main","intermediate"],
+["reflog","Show a log of where HEAD and branches have pointed.","git reflog","intermediate"],
+["remote","Manage the set of tracked remote repositories.","git remote add origin https://github.com/user/repo.git","basic"],
+["reset","Reset current HEAD to a specified state.","git reset --hard HEAD~1","intermediate"],
+["restore","Restore working-tree files to a previous state.","git restore --staged file.js","basic"],
+["revert","Create a new commit that undoes a previous commit.","git revert a1b2c3d","intermediate"],
+["rm","Remove files from the working tree and index.","git rm old-file.txt","basic"],
+["show","Show details of a commit, tag, or object.","git show a1b2c3d","basic"],
+["stash","Temporarily shelve uncommitted changes.","git stash pop","intermediate"],
+["status","Show the state of the working directory and staging area.","git status","basic"],
+["submodule","Manage nested Git repositories within a repository.","git submodule update --init","intermediate"],
+["switch","Switch to an existing or new branch.","git switch -c feature/login","basic"],
+["tag","Create, list, or delete tags for release points.","git tag v1.0.0","basic"],
+["rebase -i","Interactively reorder, squash, edit, or drop commits.","git rebase -i HEAD~5","advanced"],
+["worktree","Check out multiple branches into separate working directories at once.","git worktree add ../hotfix hotfix/urgent-bug","advanced"],
+["filter-repo","Rewrite history to purge a file or secret from every commit.","git filter-repo --path secrets.env --invert-paths","advanced"],
+["bisect run","Automate bisection by running a test script at each step.","git bisect run npm test","advanced"],
+["rerere","Reuse recorded conflict resolutions automatically on repeat merges.","git config rerere.enabled true","advanced"],
+["notes","Attach metadata to a commit without altering it.","git notes add -m \"Reviewed by QA\" a1b2c3d","advanced"],
+["cat-file","Inspect the raw content and type of any Git object.","git cat-file -p a1b2c3d","advanced"],
+["hash-object","Compute the SHA-1 of a file as Git would store it.","git hash-object -w largefile.bin","advanced"],
+["sparse-checkout","Check out only part of a large repository's working tree.","git sparse-checkout set services/api","advanced"],
+["maintenance","Schedule background repo optimization (gc, prefetch, commit-graph).","git maintenance start","advanced"],
+["range-diff","Compare two versions of a rebased commit series.","git range-diff main~5..main main~3..feature","advanced"],
+["merge --squash","Combine an entire branch into a single new commit.","git merge --squash feature/login","advanced"],
+["subtree","Embed and manage another repository as a subdirectory.","git subtree add --prefix=libs/shared git@github.com:org/shared.git main","advanced"],
+["am","Apply a series of patches from mailbox-formatted files.","git am 0001-fix-bug.patch","advanced"],
+["describe","Generate a human-readable name from the nearest tag.","git describe --tags --always","advanced"],
+];
+
+const compose = [
+["build","Build or rebuild services defined in the compose file.","docker compose build","basic"],
+["config","Validate and view the resolved compose configuration.","docker compose config","intermediate"],
+["down","Stop and remove containers, networks created by up.","docker compose down","basic"],
+["events","Stream real-time events from containers.","docker compose events","intermediate"],
+["exec","Run a command inside a running service container.","docker compose exec web bash","basic"],
+["images","List images used by the created containers.","docker compose images","basic"],
+["kill","Force-stop service containers.","docker compose kill","intermediate"],
+["logs","View output from services.","docker compose logs -f","basic"],
+["pause","Pause services.","docker compose pause","intermediate"],
+["ps","List containers for the compose project.","docker compose ps","basic"],
+["pull","Pull service images from a registry.","docker compose pull","basic"],
+["push","Push service images to a registry.","docker compose push","intermediate"],
+["restart","Restart service containers.","docker compose restart","basic"],
+["rm","Remove stopped service containers.","docker compose rm","intermediate"],
+["run","Run a one-off command in a service.","docker compose run web python manage.py migrate","intermediate"],
+["start","Start existing service containers.","docker compose start","basic"],
+["stop","Stop running service containers without removing them.","docker compose stop","basic"],
+["top","Display running processes for services.","docker compose top","intermediate"],
+["unpause","Unpause services.","docker compose unpause","intermediate"],
+["up","Create and start all services (add -d to detach).","docker compose up -d --build","basic"],
+["version","Show the Docker Compose version.","docker compose version","basic"],
+["--profile","Start only services tagged under a given profile.","docker compose --profile debug up -d","advanced"],
+["--scale","Run multiple instances of a service.","docker compose up -d --scale worker=3","advanced"],
+["watch","Auto-rebuild and sync services when source files change.","docker compose watch","advanced"],
+["cp","Copy files between a service container and the host.","docker compose cp web:/app/data.json ./data.json","advanced"],
+["-f (multiple files)","Layer a base file with environment-specific overrides.","docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d","advanced"],
+["config --resolve-image-digests","Pin the resolved compose config to exact image digests.","docker compose config --resolve-image-digests","advanced"],
+];
+
+const ghcli = [
+["auth","Authenticate the gh CLI with GitHub.","gh auth login","basic"],
+["repo","Create, clone, or view repositories.","gh repo clone user/repo","basic"],
+["issue","Create, list, or manage issues.","gh issue create --title \"Bug: build fails\"","basic"],
+["pr","Create, list, or merge pull requests.","gh pr create --fill","basic"],
+["workflow","List and manage GitHub Actions workflows.","gh workflow list","intermediate"],
+["run","View and manage workflow runs.","gh run watch","intermediate"],
+["secret","Manage GitHub Actions secrets.","gh secret set DOCKERHUB_TOKEN","intermediate"],
+["release","Create and manage releases.","gh release create v1.0.0","intermediate"],
+["gist","Create and manage gists.","gh gist create notes.md","basic"],
+["status","Show status of relevant issues, PRs, and notifications.","gh status","basic"],
+["api","Call the GitHub REST or GraphQL API directly.","gh api repos/:owner/:repo/actions/runs","advanced"],
+["pr review","Approve, request changes on, or comment on a pull request.","gh pr review --approve","advanced"],
+["workflow run","Manually trigger a workflow_dispatch run.","gh workflow run deploy.yml --ref main","advanced"],
+["variable","Manage repository or environment-level Actions variables.","gh variable set ENVIRONMENT --body production","advanced"],
+["cache","Inspect or delete GitHub Actions caches.","gh cache list","advanced"],
+["attestation","Verify build provenance for a signed artifact.","gh attestation verify myapp.tar.gz -o myuser","advanced"],
+];
+
+/* ============ RENDER ============ */
+function renderGrid(containerId, items, cls){
+  const el = document.getElementById(containerId);
+  el.innerHTML = items.map(([cmd, desc, ex, level]) => `
+    <div class="card ${cls}" data-level="${level}" data-search="${(cmd+' '+desc+' '+ex+' '+level).toLowerCase()}">
+      <div class="card-top">
+        <span class="card-cmd">${cls==='docker' ? 'docker '+cmd : (cls==='git' ? 'git '+cmd : (containerId==='grid-compose' ? 'compose '+cmd : cmd))}</span>
+        <span class="level-badge lvl-${level}">${level}</span>
+      </div>
+      <p class="card-desc">${desc}</p>
+      <div class="card-example">
+        <span>$ ${ex}</span>
+        <button class="copy-btn" onclick="copyCmd(this, ${JSON.stringify(ex)})">copy</button>
+      </div>
+    </div>
+  `).join('');
+}
+renderGrid('grid-docker', docker, 'docker');
+renderGrid('grid-git', git, 'git');
+renderGrid('grid-compose', compose, 'bonus');
+renderGrid('grid-ghcli', ghcli, 'bonus');
+
+function copyCmd(btn, text){
+  navigator.clipboard.writeText(text).then(()=>{
+    const old = btn.textContent;
+    btn.textContent = 'copied'; btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent = old; btn.classList.remove('copied'); }, 1200);
+  });
+}
+function copyYaml(btn, id){
+  const text = document.getElementById(id || 'yaml-content').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const old = btn.textContent;
+    btn.textContent = 'copied'; btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent = old; btn.classList.remove('copied'); }, 1200);
+  });
+}
+
+/* ============ TABS ============ */
+const tabButtons = document.querySelectorAll('.tab-btn');
+const panels = document.querySelectorAll('.panel-section');
+tabButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    tabButtons.forEach(b=>b.classList.remove('active'));
+    panels.forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+    updateCount();
+  });
+});
+
+/* ============ SEARCH + LEVEL FILTER ============ */
+const searchInput = document.getElementById('search');
+const countEl = document.getElementById('count');
+const emptyEl = document.getElementById('empty');
+const levelButtons = document.querySelectorAll('.level-btn');
+let currentLevel = 'all';
+
+function applyFilters(){
+  const q = searchInput.value.trim().toLowerCase();
+  document.querySelectorAll('.card').forEach(card=>{
+    const textMatch = card.dataset.search.includes(q);
+    const levelMatch = currentLevel === 'all' || card.dataset.level === currentLevel;
+    card.style.display = (textMatch && levelMatch) ? '' : 'none';
+  });
+  updateCount();
+}
+
+function updateCount(){
+  const activePanel = document.querySelector('.panel-section.active');
+  const cards = activePanel.querySelectorAll('.card');
+  let visible = 0;
+  cards.forEach(c=>{ if(c.style.display !== 'none') visible++; });
+  countEl.textContent = visible;
+  emptyEl.classList.toggle('show', visible === 0);
+}
+
+searchInput.addEventListener('input', applyFilters);
+
+levelButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    levelButtons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentLevel = btn.dataset.level;
+    applyFilters();
+  });
+});
+
+applyFilters();
+</script>
+</body>
+</html>
