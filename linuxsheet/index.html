@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinuxRef — Linux Command Reference</title>
+<meta name="description" content="A searchable, level-filtered reference for essential Linux commands — from day-one basics to advanced system administration.">
+<meta name="theme-color" content="#0c0d10">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230c0d10'/%3E%3Ctext x='32' y='42' font-family='monospace' font-size='30' font-weight='700' fill='%23818cf8' text-anchor='middle'%3E~%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0c0d10;
+    --panel: #16181d;
+    --panel-2: #1c1f26;
+    --border: #2a2e38;
+    --text: #e4e6ec;
+    --text-dim: #8b8fa3;
+    --accent: #818cf8;
+    --basic: #a3e635;
+    --intermediate: #fb923c;
+    --advanced: #f472b6;
+    --shadow: 0 8px 28px rgba(0,0,0,0.45);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  html{ scroll-behavior: smooth; }
+  body{
+    background:
+      radial-gradient(circle at 15% 0%, rgba(129,140,248,0.08), transparent 40%),
+      radial-gradient(circle at 85% 10%, rgba(163,230,53,0.05), transparent 40%),
+      var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    min-height:100vh;
+  }
+  ::selection{ background: var(--accent); color:#0c0d10; }
+  a{ color: var(--accent); }
+
+  /* Top nav */
+  .topbar{
+    border-bottom:1px solid var(--border);
+    background: rgba(17,22,29,0.75);
+    backdrop-filter: blur(10px);
+    position: sticky; top:0; z-index:50;
+  }
+  .topbar-inner{
+    max-width:920px; margin:0 auto; padding:14px 24px;
+    display:flex; align-items:center; justify-content:space-between; gap:14px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .brand-mark{
+    width:28px; height:28px; border-radius:7px;
+    background: linear-gradient(135deg, var(--accent), var(--basic));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono', monospace; font-weight:700; font-size:14px; color:#050709;
+  }
+  .brand-name{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:15px; color:var(--text); }
+  .brand-name span{ color:var(--text-dim); font-weight:500; }
+  .status-pill{
+    font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--basic);
+    border:1px solid rgba(163,230,53,0.3); background:rgba(163,230,53,0.08);
+    border-radius:20px; padding:4px 10px; display:inline-flex; align-items:center; gap:6px;
+  }
+  .dotpulse{ width:6px; height:6px; border-radius:50%; background:var(--basic); box-shadow:0 0 0 3px rgba(163,230,53,0.18); }
+
+  /* Hero */
+  .hero{ max-width:920px; margin: 48px auto 32px; padding: 0 24px; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono', monospace; font-size:11.5px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--text-dim); border:1px solid var(--border); border-radius:20px; padding:6px 12px 6px 10px; margin-bottom:20px;
+  }
+  .eyebrow .pulse{ width:6px; height:6px; border-radius:50%; background:var(--basic); box-shadow:0 0 0 3px rgba(163,230,53,0.15); }
+  .hero h1{
+    font-family:'Space Grotesk', sans-serif; font-size: clamp(30px, 4.5vw, 46px);
+    line-height:1.08; margin:0 0 16px; font-weight:700; letter-spacing:-0.02em;
+  }
+  .hero h1 span{ color: var(--accent); }
+  .hero p{ color:var(--text-dim); font-size:16px; line-height:1.65; max-width:56ch; margin:0 0 24px; }
+  .hero-stats{ display:flex; gap:0; border-top:1px solid var(--border); padding-top:18px; }
+  .stat{ padding-right:24px; margin-right:24px; border-right:1px solid var(--border); }
+  .stat:last-child{ border-right:none; margin-right:0; padding-right:0; }
+  .stat-num{ font-family:'Space Grotesk', sans-serif; font-size:22px; font-weight:700; color:var(--text); display:block; line-height:1.2; }
+  .stat-label{ font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.08em; }
+
+  /* Controls */
+  .controls{ max-width:920px; margin: 0 auto 8px; padding: 0 24px; }
+  .search-row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:16px; }
+  .search-box{
+    flex:1; min-width:240px; display:flex; align-items:center; gap:10px;
+    background: var(--panel); border:1px solid var(--border); border-radius:8px; padding:10px 14px;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .search-box .prompt{ color:var(--basic); }
+  .search-box input{
+    flex:1; background:transparent; border:none; outline:none; color:var(--text);
+    font-family:'JetBrains Mono', monospace; font-size:14px;
+  }
+  .search-box input::placeholder{ color:var(--text-dim); }
+  .count-pill{
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-dim);
+    border:1px solid var(--border); border-radius:20px; padding:8px 14px; white-space:nowrap;
+  }
+  .level-filter{ display:flex; gap:6px; margin-bottom:24px; flex-wrap:wrap; }
+  .level-btn{
+    font-family:'JetBrains Mono', monospace; font-size:12px; text-transform:uppercase; letter-spacing:0.04em;
+    background: var(--panel); border:1px solid var(--border); color:var(--text-dim);
+    border-radius:20px; padding:6px 14px; cursor:pointer; transition: all .15s ease;
+  }
+  .level-btn:hover{ color:var(--text); }
+  .level-btn.active{ color:var(--bg); background:var(--text); border-color:var(--text); }
+  .level-btn.active[data-level="basic"]{ background:var(--basic); border-color:var(--basic); }
+  .level-btn.active[data-level="intermediate"]{ background:var(--intermediate); border-color:var(--intermediate); }
+  .level-btn.active[data-level="advanced"]{ background:var(--advanced); border-color:var(--advanced); }
+
+  .cat-chips{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px; }
+  .cat-chip{
+    font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--text-dim); text-decoration:none;
+    border:1px solid var(--border); background: var(--panel); border-radius:20px; padding:6px 12px;
+    display:inline-flex; align-items:center; gap:6px; transition: color .15s ease, border-color .15s ease;
+  }
+  .cat-chip:hover{ color:var(--text); border-color:var(--text-dim); }
+  .cat-chip span{ color:var(--text-dim); font-size:10px; background: rgba(255,255,255,0.06); border-radius:10px; padding:1px 6px; }
+  .cat-chip.active-chip{ color: var(--bg); background: var(--text); border-color: var(--text); }
+  .cat-chip.active-chip span{ background: rgba(0,0,0,0.15); color: var(--bg); }
+
+  /* Grid */
+  .wrap{ max-width:920px; margin:0 auto; padding: 0 24px 80px; }
+  .section-heading{
+    font-family:'Space Grotesk', sans-serif; font-size:13px; text-transform:uppercase; letter-spacing:0.12em;
+    color:var(--text-dim); margin: 28px 0 14px; padding-top:10px; border-top:1px dashed var(--border);
+    display:flex; align-items:center; gap:8px; scroll-margin-top: 100px;
+  }
+  .section-heading:first-child{ border-top:none; padding-top:0; margin-top:0; }
+  .section-count{
+    font-family:'JetBrains Mono', monospace; text-transform:none; letter-spacing:0; font-size:11px; color:var(--text-dim);
+    background: var(--panel); border:1px solid var(--border); border-radius:20px; padding:2px 8px;
+  }
+  .grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:12px; }
+  .card{
+    background: var(--panel); border:1px solid var(--border); border-left:2px solid var(--border);
+    border-radius:8px; padding:14px 16px; transition: border-left-color .15s ease, background .15s ease, transform .15s ease;
+    animation: cardIn .35s ease backwards;
+  }
+  @keyframes cardIn{ from{ opacity:0; transform: translateY(6px); } to{ opacity:1; transform: translateY(0); } }
+  .card:hover{ transform: translateY(-2px); background: var(--panel-2); border-left-color: var(--accent); }
+  .card-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
+  .card-cmd{ font-family:'JetBrains Mono', monospace; font-weight:600; font-size:13.5px; color: var(--accent); }
+  .copy-btn{
+    font-family:'JetBrains Mono', monospace; font-size:11px; background: var(--panel-2); border:1px solid var(--border);
+    color:var(--text-dim); border-radius:5px; padding:4px 8px; cursor:pointer; flex-shrink:0;
+  }
+  .copy-btn:hover{ color:var(--text); border-color:var(--text-dim); }
+  .copy-btn.copied{ color:var(--basic); border-color:var(--basic); }
+  .card-desc{ font-size:13px; color:var(--text); line-height:1.5; margin:0 0 10px; }
+  .card-example{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:8px;
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-dim);
+    background: rgba(0,0,0,0.25); border-radius:6px; padding:8px 10px;
+  }
+  .card-example span{ white-space:pre-wrap; word-break:break-word; line-height:1.5; }
+  .level-badge{
+    font-family:'JetBrains Mono', monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.06em;
+    padding:3px 8px; border-radius:20px; flex-shrink:0; border:1px solid transparent;
+  }
+  .level-badge.lvl-basic{ color:var(--basic); background:rgba(163,230,53,0.1); border-color:rgba(163,230,53,0.25); }
+  .level-badge.lvl-intermediate{ color:var(--intermediate); background:rgba(251,146,60,0.1); border-color:rgba(251,146,60,0.25); }
+  .level-badge.lvl-advanced{ color:var(--advanced); background:rgba(244,114,182,0.1); border-color:rgba(244,114,182,0.25); }
+
+  .empty-state{ text-align:center; color:var(--text-dim); font-family:'JetBrains Mono', monospace; padding:60px 20px; display:none; }
+  .empty-state.show{ display:block; }
+
+  .to-top{
+    position:fixed; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%;
+    background: var(--panel); border:1px solid var(--border); color:var(--text-dim); font-size:18px; cursor:pointer;
+    box-shadow: var(--shadow); opacity:0; pointer-events:none; transform: translateY(8px);
+    transition: opacity .2s ease, transform .2s ease, color .15s ease, border-color .15s ease; z-index:60;
+  }
+  .to-top.show{ opacity:1; pointer-events:auto; transform: translateY(0); }
+  .to-top:hover{ color:var(--accent); border-color:var(--accent); }
+
+  footer{
+    border-top:1px solid var(--border); text-align:center; padding:26px 20px 40px;
+    color:var(--text-dim); font-family:'JetBrains Mono', monospace; font-size:12px;
+  }
+  .footer-inner{ display:inline-flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+  .footer-sep{ opacity:0.4; }
+  .author-card{
+    max-width:400px; margin:24px auto 0; padding:16px 18px; background: var(--panel); border:1px solid var(--border);
+    border-radius:12px; display:flex; align-items:center; gap:14px; text-align:left;
+  }
+  .author-avatar{
+    width:40px; height:40px; border-radius:50%; flex-shrink:0;
+    background: linear-gradient(135deg, var(--accent), var(--basic));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:15px; color:#050709;
+  }
+  .author-name{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:14px; color:var(--text); margin:0 0 2px; }
+  .author-role{ font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--basic); margin:0; }
+
+  @media (max-width: 640px){ .topbar-inner{ flex-wrap: wrap; } }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-inner">
+      <a href="#top" class="brand">
+        <span class="brand-mark">~</span>
+        <span class="brand-name">LinuxRef <span>/ command reference</span></span>
+      </a>
+      <span class="status-pill"><span class="dotpulse"></span><span id="totalStat">133</span> commands</span>
+    </div>
+  </div>
+
+  <div class="hero" id="top">
+    <div class="eyebrow"><span class="pulse"></span>Basic → Advanced</div>
+    <h1>Master the <span>Linux</span> command line.</h1>
+    <p>A precise, searchable reference covering everyday file management through system administration, networking, and security — filter by skill level or search by command.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">133</span><span class="stat-label">Total commands</span></div>
+      <div class="stat"><span class="stat-num">17</span><span class="stat-label">Categories</span></div>
+      <div class="stat"><span class="stat-num">3</span><span class="stat-label">Skill levels</span></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="search-row">
+      <div class="search-box">
+        <span class="prompt">/</span>
+        <input id="search" type="text" placeholder="filter commands… e.g. 'permissions', 'firewall', 'network'">
+      </div>
+      <div class="count-pill"><span id="count">0</span> commands shown</div>
+    </div>
+    <div class="level-filter">
+      <button class="level-btn active" data-level="all">All levels</button>
+      <button class="level-btn" data-level="basic">Basic</button>
+      <button class="level-btn" data-level="intermediate">Intermediate</button>
+      <button class="level-btn" data-level="advanced">Advanced</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div id="grid-container"></div>
+    <div class="empty-state" id="empty">no matching commands — try a different search term</div>
+  </div>
+
+  <button id="toTop" class="to-top" aria-label="Back to top" title="Back to top">↑</button>
+
+  <footer>
+    <div class="footer-inner">
+      <span>LinuxRef · built as a static reference</span>
+      <span class="footer-sep">·</span>
+      <span>works fully offline</span>
+    </div>
+    <div class="author-card">
+      <div class="author-avatar">AH</div>
+      <div>
+        <p class="author-name">Ahsan Ul Haq</p>
+        <p class="author-role">Network Engineer</p>
+      </div>
+    </div>
+  </footer>
+
+<script>
+const linux = [
+["ls","List files and directories.","ls -la","basic","File &amp; Directory Management"],
+["cd","Change the current working directory.","cd /var/www","basic","File &amp; Directory Management"],
+["pwd","Print the current working directory path.","pwd","basic","File &amp; Directory Management"],
+["mkdir","Create a new directory.","mkdir -p project/src","basic","File &amp; Directory Management"],
+["rmdir","Remove an empty directory.","rmdir old_folder","basic","File &amp; Directory Management"],
+["rm","Remove files or directories.","rm -rf temp/","basic","File &amp; Directory Management"],
+["cp","Copy files or directories.","cp -r src/ backup/","basic","File &amp; Directory Management"],
+["mv","Move or rename files and directories.","mv old.txt new.txt","basic","File &amp; Directory Management"],
+["touch","Create an empty file, or update its timestamp.","touch notes.txt","basic","File &amp; Directory Management"],
+["find","Search for files matching name, type, size, or date criteria.","find / -name \"*.log\" -mtime +7","intermediate","File &amp; Directory Management"],
+["tree","Display a directory's contents as a visual tree.","tree -L 2","intermediate","File &amp; Directory Management"],
+["ln","Create hard or symbolic links between files.","ln -s /opt/app /usr/local/app","intermediate","File &amp; Directory Management"],
+["chmod","Change file or directory permissions.","chmod 755 script.sh","basic","Permissions &amp; Ownership"],
+["chown","Change the owner (and group) of a file.","chown user:group file.txt","basic","Permissions &amp; Ownership"],
+["chgrp","Change only the group ownership of a file.","chgrp devs shared.log","intermediate","Permissions &amp; Ownership"],
+["sudo","Run a single command with elevated (root) privileges.","sudo apt update","basic","Permissions &amp; Ownership"],
+["su","Switch to another user account (or root).","su - deploy","intermediate","Permissions &amp; Ownership"],
+["umask","Set the default permission mask for newly created files.","umask 022","advanced","Permissions &amp; Ownership"],
+["ps","List currently running processes.","ps aux","basic","Process Management"],
+["top","Show live, sortable process and resource usage.","top","basic","Process Management"],
+["htop","Interactive, colorized process viewer (top alternative).","htop","intermediate","Process Management"],
+["kill","Send a termination signal to a process by its PID.","kill -9 1234","basic","Process Management"],
+["killall","Kill all processes matching a given name.","killall nginx","intermediate","Process Management"],
+["pkill","Kill processes matching a name/pattern, without needing a PID.","pkill -f node","intermediate","Process Management"],
+["jobs","List background/suspended jobs in the current shell.","jobs -l","intermediate","Process Management"],
+["bg / fg","Resume a suspended job in the background or foreground.","fg %1","intermediate","Process Management"],
+["nice / renice","Set or change a process's CPU scheduling priority.","nice -n 10 ./script.sh","advanced","Process Management"],
+["systemctl","Start, stop, enable, or inspect systemd services.","systemctl restart nginx","intermediate","Process Management"],
+["nohup","Run a command immune to hangups so it keeps running after logout.","nohup ./server.sh &amp;","advanced","Process Management"],
+["cat","Print a file's entire contents to the terminal.","cat access.log","basic","Text Processing &amp; Search"],
+["less","View a file's contents one page/screen at a time.","less error.log","basic","Text Processing &amp; Search"],
+["head","Show the first lines of a file (default 10).","head -20 log.txt","basic","Text Processing &amp; Search"],
+["tail","Show the last lines of a file; -f follows live updates.","tail -f app.log","basic","Text Processing &amp; Search"],
+["grep","Search text for lines matching a pattern.","grep -r \"ERROR\" /var/log","basic","Text Processing &amp; Search"],
+["sed","Stream editor for find-and-replace and text transformations.","sed -i 's/foo/bar/g' file.txt","intermediate","Text Processing &amp; Search"],
+["awk","Pattern-scanning and text-processing language, great for columns.","awk '{print $1, $3}' access.log","advanced","Text Processing &amp; Search"],
+["cut","Extract specific columns/fields from lines of text.","cut -d',' -f1,3 data.csv","intermediate","Text Processing &amp; Search"],
+["sort","Sort lines of text alphabetically or numerically.","sort -nr scores.txt","basic","Text Processing &amp; Search"],
+["uniq","Filter out or count adjacent repeated lines.","sort file.txt | uniq -c","intermediate","Text Processing &amp; Search"],
+["wc","Count lines, words, and characters in a file.","wc -l file.txt","basic","Text Processing &amp; Search"],
+["diff","Compare two files line by line and show differences.","diff old.conf new.conf","intermediate","Text Processing &amp; Search"],
+["uname","Print system and kernel information.","uname -a","basic","System Info &amp; Monitoring"],
+["uptime","Show how long the system has been running and load averages.","uptime","basic","System Info &amp; Monitoring"],
+["whoami","Print the currently logged-in username.","whoami","basic","System Info &amp; Monitoring"],
+["hostname","Show or set the system's network hostname.","hostname","basic","System Info &amp; Monitoring"],
+["df","Show available/used disk space per mounted filesystem.","df -h","basic","System Info &amp; Monitoring"],
+["du","Show disk space used by files and directories.","du -sh */","intermediate","System Info &amp; Monitoring"],
+["free","Show total, used, and free RAM and swap.","free -h","basic","System Info &amp; Monitoring"],
+["vmstat","Report virtual memory, CPU, and I/O statistics over time.","vmstat 2 5","advanced","System Info &amp; Monitoring"],
+["lscpu","Display detailed CPU architecture information.","lscpu","intermediate","System Info &amp; Monitoring"],
+["dmesg","View kernel ring buffer messages (boot and hardware logs).","dmesg | tail -50","advanced","System Info &amp; Monitoring"],
+["journalctl","Query and follow the systemd journal/service logs.","journalctl -u nginx -f","advanced","System Info &amp; Monitoring"],
+["ping","Test network connectivity/latency to a host.","ping -c 4 google.com","basic","Networking"],
+["curl","Transfer data to or from a URL (APIs, downloads, testing).","curl -I https://example.com","basic","Networking"],
+["wget","Download files from the web directly to disk.","wget https://example.com/file.tar.gz","basic","Networking"],
+["ip","Show or configure network interfaces, addresses, and routes.","ip addr show","intermediate","Networking"],
+["ss","Show active socket/network connection statistics.","ss -tulpn","intermediate","Networking"],
+["netstat","Legacy tool to show network connections and listening ports.","netstat -tulpn","intermediate","Networking"],
+["traceroute","Trace the network path (hops) packets take to a host.","traceroute example.com","advanced","Networking"],
+["dig / nslookup","Query DNS records for a domain.","dig example.com","intermediate","Networking"],
+["ssh","Securely log into and run commands on a remote machine.","ssh user@192.168.1.10","basic","Networking"],
+["scp","Securely copy files between local and remote hosts over SSH.","scp file.txt user@host:/path","intermediate","Networking"],
+["rsync","Efficiently sync files/directories locally or remotely, copying only changes.","rsync -avz src/ user@host:/dest/","advanced","Networking"],
+["apt / apt-get","Install, update, and manage packages on Debian/Ubuntu.","sudo apt install nginx","basic","Package Management"],
+["dpkg","Install or query low-level .deb package files directly.","sudo dpkg -i package.deb","intermediate","Package Management"],
+["snap","Install and manage sandboxed Snap packages.","sudo snap install code","intermediate","Package Management"],
+["yum / dnf","Install and manage packages on RHEL/Fedora/CentOS.","sudo dnf install httpd","basic","Package Management"],
+["lsblk","List block devices — disks and their partitions.","lsblk","intermediate","Disk &amp; Storage"],
+["mount","Attach a filesystem/partition to the directory tree.","sudo mount /dev/sdb1 /mnt/data","intermediate","Disk &amp; Storage"],
+["umount","Detach (unmount) a mounted filesystem.","sudo umount /mnt/data","intermediate","Disk &amp; Storage"],
+["fdisk","Create, delete, and manage disk partitions.","sudo fdisk /dev/sdb","advanced","Disk &amp; Storage"],
+["mkfs","Create a new filesystem (format) on a partition.","sudo mkfs.ext4 /dev/sdb1","advanced","Disk &amp; Storage"],
+["blkid","Show block device UUIDs and filesystem types.","sudo blkid /dev/sdb1","intermediate","Disk &amp; Storage"],
+["tar","Archive, and optionally compress, files and directories.","tar -czvf backup.tar.gz /var/www","basic","Archiving &amp; Compression"],
+["gzip / gunzip","Compress or decompress a single file.","gzip large.log","intermediate","Archiving &amp; Compression"],
+["zip / unzip","Create or extract .zip archives.","unzip project.zip -d project/","basic","Archiving &amp; Compression"],
+["crontab","Schedule commands/scripts to run automatically on a recurring basis.","crontab -e","advanced","Advanced &amp; Scripting"],
+["xargs","Build and execute commands using input piped from another command.","find . -name \"*.tmp\" | xargs rm","advanced","Advanced &amp; Scripting"],
+["alias","Create a shortcut name for a longer command.","alias ll='ls -la'","intermediate","Advanced &amp; Scripting"],
+["export","Set an environment variable available to child processes.","export PATH=$PATH:/opt/bin","intermediate","Advanced &amp; Scripting"],
+["lsof","List open files and which processes currently hold them.","lsof -i :8080","advanced","Advanced &amp; Scripting"],
+["strace","Trace the system calls a running program makes.","strace -p 1234","advanced","Advanced &amp; Scripting"],
+["tmux / screen","Run persistent terminal sessions that survive disconnects.","tmux new -s mysession","advanced","Advanced &amp; Scripting"],
+["history","Show previously run shell commands.","history | grep docker","basic","Advanced &amp; Scripting"],
+["useradd","Create a new user account.","sudo useradd -m -s /bin/bash deploy","intermediate","User &amp; Group Management"],
+["usermod","Modify an existing user account (e.g. add to a group).","sudo usermod -aG docker deploy","intermediate","User &amp; Group Management"],
+["userdel","Delete a user account.","sudo userdel -r deploy","intermediate","User &amp; Group Management"],
+["passwd","Set or change a user's password.","sudo passwd deploy","basic","User &amp; Group Management"],
+["groupadd","Create a new user group.","sudo groupadd developers","intermediate","User &amp; Group Management"],
+["groups","List which groups a user belongs to.","groups deploy","basic","User &amp; Group Management"],
+["id","Show a user's UID, GID, and group memberships.","id deploy","basic","User &amp; Group Management"],
+["visudo","Safely edit the sudoers file with syntax checking.","sudo visudo","advanced","User &amp; Group Management"],
+["ufw","Manage the Uncomplicated Firewall (allow/deny ports).","sudo ufw allow 443/tcp","basic","Security &amp; Firewall"],
+["iptables","Configure low-level Linux kernel firewall rules.","sudo iptables -L -n","advanced","Security &amp; Firewall"],
+["fail2ban-client","Manage Fail2Ban, which bans IPs after repeated failed logins.","sudo fail2ban-client status sshd","advanced","Security &amp; Firewall"],
+["openssl","Generate keys/certificates and inspect TLS connections.","openssl x509 -in cert.pem -noout -dates","advanced","Security &amp; Firewall"],
+["ssh-keygen","Generate a new SSH public/private key pair.","ssh-keygen -t ed25519 -C \"you@example.com\"","intermediate","Security &amp; Firewall"],
+["ulimit","View or set resource limits for the current shell (open files, processes).","ulimit -n 4096","advanced","Security &amp; Firewall"],
+["date","Display or set the system date and time.","date '+%Y-%m-%d %H:%M:%S'","basic","Scheduling &amp; Environment"],
+["cal","Display a calendar in the terminal.","cal","basic","Scheduling &amp; Environment"],
+["at","Schedule a one-off command to run once at a later time.","echo \"./backup.sh\" | at 02:00","advanced","Scheduling &amp; Environment"],
+["watch","Repeatedly run a command and show live-updating output.","watch -n 2 docker ps","intermediate","Scheduling &amp; Environment"],
+["env","List all current environment variables.","env | grep PATH","basic","Scheduling &amp; Environment"],
+["source","Load variables/functions from a file into the current shell.","source .env","intermediate","Scheduling &amp; Environment"],
+["systemd-analyze","Analyze system boot time and service startup order.","systemd-analyze blame","advanced","Scheduling &amp; Environment"],
+["timedatectl","View or set the system clock, timezone, and NTP sync.","timedatectl set-timezone Asia/Karachi","intermediate","Scheduling &amp; Environment"],
+["stat","Show detailed metadata about a file (size, permissions, timestamps).","stat index.html","intermediate","File &amp; Directory Management"],
+["file","Detect and print the type of a file's contents.","file archive.tar.gz","basic","File &amp; Directory Management"],
+["readlink","Resolve a symbolic link to its real target path.","readlink -f /usr/local/app","intermediate","File &amp; Directory Management"],
+["ncdu","Interactive, navigable disk usage analyzer.","ncdu /var","intermediate","Disk &amp; Storage"],
+["iostat","Report CPU and disk I/O statistics.","iostat -x 2","advanced","System Info &amp; Monitoring"],
+["sar","Collect and report historical system activity (CPU, memory, I/O).","sar -u 2 5","advanced","System Info &amp; Monitoring"],
+["hostnamectl","View or set the system's hostname (systemd-based).","hostnamectl set-hostname web01","intermediate","System Info &amp; Monitoring"],
+["sysctl","View or change kernel parameters at runtime (networking, memory, limits).","sysctl -w net.ipv4.ip_forward=1","advanced","Kernel &amp; Performance Tuning"],
+["perf","Profile CPU performance and find hotspots in running programs.","perf top","advanced","Kernel &amp; Performance Tuning"],
+["gdb","Debug a running or crashed program at the source/assembly level.","gdb -p 1234","advanced","Kernel &amp; Performance Tuning"],
+["ltrace","Trace library calls made by a program (companion to strace).","ltrace -p 1234","advanced","Kernel &amp; Performance Tuning"],
+["chroot","Run a command with a different root directory, isolating it from the rest of the filesystem.","chroot /mnt/newroot /bin/bash","advanced","Kernel &amp; Performance Tuning"],
+["systemd-cgtop","Show live resource usage grouped by systemd control groups (cgroups).","systemd-cgtop","advanced","Kernel &amp; Performance Tuning"],
+["tcpdump","Capture and inspect raw network packets on an interface.","sudo tcpdump -i eth0 port 80","advanced","Advanced Networking"],
+["nft","Modern replacement for iptables for kernel-level packet filtering.","sudo nft list ruleset","advanced","Advanced Networking"],
+["tc","Configure traffic shaping: bandwidth limits and queuing on network interfaces.","sudo tc qdisc add dev eth0 root tbf rate 1mbit","advanced","Advanced Networking"],
+["ethtool","View or change low-level network interface driver and hardware settings.","sudo ethtool eth0","advanced","Advanced Networking"],
+["ip netns","Create and manage isolated network namespaces.","sudo ip netns add ns1","advanced","Advanced Networking"],
+["pvcreate","Initialize a disk or partition for use as an LVM physical volume.","sudo pvcreate /dev/sdb1","advanced","Storage: LVM &amp; RAID"],
+["vgcreate","Create an LVM volume group from one or more physical volumes.","sudo vgcreate vg0 /dev/sdb1","advanced","Storage: LVM &amp; RAID"],
+["lvcreate","Create a logical volume within an LVM volume group.","sudo lvcreate -L 10G -n lv0 vg0","advanced","Storage: LVM &amp; RAID"],
+["mdadm","Create and manage Linux software RAID arrays.","sudo mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/sdb /dev/sdc","advanced","Storage: LVM &amp; RAID"],
+["auditctl","Configure kernel-level audit rules for security compliance tracking.","sudo auditctl -w /etc/passwd -p wa","advanced","Auditing &amp; Compliance"],
+["ausearch","Search and review audit logs collected by auditd.","sudo ausearch -k passwd_changes","advanced","Auditing &amp; Compliance"],
+["lynis","Run a security audit and hardening scan of the entire system.","sudo lynis audit system","advanced","Auditing &amp; Compliance"],
+["trap","Catch signals like Ctrl+C inside a script to run cleanup code before exit.","trap 'echo cleaning up' EXIT","advanced","Advanced &amp; Scripting"],
+["getopts","Parse command-line flags and options inside a shell script.","while getopts \"a:b:\" opt; do echo $opt; done","advanced","Advanced &amp; Scripting"],
+];
+
+function cardHtml(cmd, desc, ex, level){
+  return `
+    <div class="card" data-level="${level}" data-search="${(cmd+' '+desc+' '+ex+' '+level).toLowerCase()}">
+      <div class="card-top">
+        <span class="card-cmd">${cmd}</span>
+        <span class="level-badge lvl-${level}">${level}</span>
+      </div>
+      <p class="card-desc">${desc}</p>
+      <div class="card-example">
+        <span>$ ${ex}</span>
+        <button class="copy-btn" onclick="copyCmd(this, ${JSON.stringify(ex)})">copy</button>
+      </div>
+    </div>
+  `;
+}
+
+function render(items){
+  const el = document.getElementById('grid-container');
+  const order = [];
+  const groups = {};
+  items.forEach(([cmd, desc, ex, level, category]) => {
+    if(!groups[category]){ groups[category] = []; order.push(category); }
+    groups[category].push([cmd, desc, ex, level]);
+  });
+
+  const chips = order.map(category => {
+    const anchor = 'cat-' + category.replace(/[^a-zA-Z0-9]+/g,'-').toLowerCase();
+    return `<a href="#${anchor}" class="cat-chip">${category} <span>${groups[category].length}</span></a>`;
+  }).join('');
+
+  const sections = order.map(category => {
+    const anchor = 'cat-' + category.replace(/[^a-zA-Z0-9]+/g,'-').toLowerCase();
+    return `
+    <div class="section-heading" id="${anchor}">${category} <span class="section-count">${groups[category].length}</span></div>
+    <div class="grid">
+      ${groups[category].map(([cmd, desc, ex, level]) => cardHtml(cmd, desc, ex, level)).join('')}
+    </div>
+  `;
+  }).join('');
+
+  el.innerHTML = `<div class="cat-chips">${chips}</div>${sections}`;
+  initScrollSpy(el);
+}
+
+function initScrollSpy(container){
+  if(typeof IntersectionObserver === 'undefined') return;
+  const headings = container.querySelectorAll('.section-heading[id]');
+  const chips = container.querySelectorAll('.cat-chip');
+  if(!headings.length || !chips.length) return;
+  const chipMap = {};
+  chips.forEach(chip => { chipMap[chip.getAttribute('href').slice(1)] = chip; });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        chips.forEach(c => c.classList.remove('active-chip'));
+        const chip = chipMap[entry.target.id];
+        if(chip) chip.classList.add('active-chip');
+      }
+    });
+  }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+  headings.forEach(h => observer.observe(h));
+}
+
+render(linux);
+document.getElementById('totalStat').textContent = linux.length;
+
+function copyCmd(btn, text){
+  navigator.clipboard.writeText(text).then(()=>{
+    const old = btn.textContent;
+    btn.textContent = 'copied'; btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent = old; btn.classList.remove('copied'); }, 1200);
+  });
+}
+
+/* Search + level filter */
+const searchInput = document.getElementById('search');
+const countEl = document.getElementById('count');
+const emptyEl = document.getElementById('empty');
+const levelButtons = document.querySelectorAll('.level-btn');
+let currentLevel = 'all';
+
+function applyFilters(){
+  const q = searchInput.value.trim().toLowerCase();
+  let visible = 0;
+  document.querySelectorAll('.card').forEach(card=>{
+    const textMatch = card.dataset.search.includes(q);
+    const levelMatch = currentLevel === 'all' || card.dataset.level === currentLevel;
+    const show = textMatch && levelMatch;
+    card.style.display = show ? '' : 'none';
+    if(show) visible++;
+  });
+  countEl.textContent = visible;
+  emptyEl.classList.toggle('show', visible === 0);
+}
+
+searchInput.addEventListener('input', applyFilters);
+levelButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    levelButtons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentLevel = btn.dataset.level;
+    applyFilters();
+  });
+});
+
+document.addEventListener('keydown', (e)=>{
+  const tag = document.activeElement.tagName;
+  const isTyping = tag === 'INPUT' || tag === 'TEXTAREA';
+  if(e.key === '/' && !isTyping){ e.preventDefault(); searchInput.focus(); }
+  else if(e.key === 'Escape' && document.activeElement === searchInput){
+    searchInput.value = ''; applyFilters(); searchInput.blur();
+  }
+});
+
+const toTopBtn = document.getElementById('toTop');
+window.addEventListener('scroll', ()=>{ toTopBtn.classList.toggle('show', window.scrollY > 500); });
+toTopBtn.addEventListener('click', ()=>{ window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+applyFilters();
+</script>
+</body>
+</html>
