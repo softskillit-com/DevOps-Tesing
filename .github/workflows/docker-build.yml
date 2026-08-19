@@ -32,8 +32,8 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
-          context: ./web-git-pro
+          context: ./linuxsheet
           push: ${{ github.event_name == 'push' }}
-          tags: ahsanchoudhery/devops-cheatsheet:v2
+          tags: ahsanchoudhery/linuxcore
           cache-from: type=gha
           cache-to: type=gha,mode=max
